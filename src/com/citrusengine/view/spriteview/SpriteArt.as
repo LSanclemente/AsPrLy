@@ -1,6 +1,14 @@
 package com.citrusengine.view.spriteview 
 {
+
+	import com.citrusengine.core.CitrusEngine;
+	import com.citrusengine.core.CitrusObject;
+	import com.citrusengine.core.IState;
+	import com.citrusengine.physics.Box2D;
+	import com.citrusengine.physics.Nape;
+	import com.citrusengine.system.components.ViewComponent;
 	import com.citrusengine.view.ISpriteView;
+
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
@@ -43,6 +51,7 @@ package com.citrusengine.view.spriteview
 		public var loader:Loader;
 		
 		private var _citrusObject:ISpriteView;
+		private var _physicsComponent:*;
 		private var _registration:String;
 		private var _view:*;
 		private var _animation:String;
@@ -51,6 +60,25 @@ package com.citrusengine.view.spriteview
 		public function SpriteArt(object:ISpriteView) 
 		{
 			_citrusObject = object;
+			
+			var ceState:IState = CitrusEngine.getInstance().state;
+			
+			if (_citrusObject is ViewComponent && (ceState.getFirstObjectByType(Box2D) as Box2D || ceState.getFirstObjectByType(Nape) as Nape))
+				_physicsComponent = (_citrusObject as ViewComponent).entity.components["physics"];
+			
+			this.name = (_citrusObject as CitrusObject).name;
+		}
+		
+		public function moveRegistrationPoint(registrationPoint:String):void {
+			
+			if (registrationPoint == "topLeft") {
+				content.x = 0;
+				content.y = 0;
+			} else if (registrationPoint == "center") {
+				content.x = -content.width / 2;
+				content.y = -content.height / 2;
+			}
+			
 		}
 		
 		public function get registration():String
@@ -65,16 +93,7 @@ package com.citrusengine.view.spriteview
 				
 			_registration = value;
 			
-			if (_registration == "topLeft")
-			{
-				content.x = 0;
-				content.y = 0;
-			}
-			else if (_registration == "center")
-			{
-				content.x = -content.width / 2;
-				content.y = -content.height / 2;
-			}
+			moveRegistrationPoint(_registration);
 		}
 		
 		public function get view():*
@@ -109,6 +128,7 @@ package com.citrusengine.view.spriteview
 					{
 						var artClass:Class = getDefinitionByName(classString) as Class;
 						content = new artClass();
+						moveRegistrationPoint(_citrusObject.registration);
 						addChild(content);
 					}
 				}
@@ -116,16 +136,25 @@ package com.citrusengine.view.spriteview
 				{
 					//view property is a class reference
 					content = new citrusObject.view();
+					moveRegistrationPoint(_citrusObject.registration);
 					addChild(content);
 				}
+				else if (_view is DisplayObject)
+				{
+					// view property is a Display Object reference
+					content = _view;
+					moveRegistrationPoint(_citrusObject.registration);
+					addChild(content);
+				} 
 				else
 				{
 					throw new Error("SpriteArt doesn't know how to create a graphic object from the provided CitrusObject " + citrusObject);
-					return null;
+					return;
 				}
 				
 				if (content && content.hasOwnProperty("initialize"))
 					content["initialize"](_citrusObject);
+					
 			}
 		}
 		
@@ -166,12 +195,23 @@ package com.citrusengine.view.spriteview
 		
 		public function update(stateView:SpriteView):void
 		{
-			//position = object position + (camera position * inverse parallax)
-			x = _citrusObject.x + (-stateView.viewRoot.x * (1 - _citrusObject.parallax)) + _citrusObject.offsetX;
-			y = _citrusObject.y + (-stateView.viewRoot.y * (1 - _citrusObject.parallax)) + _citrusObject.offsetY;
-			rotation = _citrusObject.rotation;
-			visible = _citrusObject.visible;
 			scaleX = _citrusObject.inverted ? -1 : 1;
+			//position = object position + (camera position * inverse parallax)
+			
+			if (_physicsComponent) {
+				
+				x = _physicsComponent.x + (-stateView.viewRoot.x * (1 - _citrusObject.parallax)) + _citrusObject.offsetX * scaleX;
+				y = _physicsComponent.y + (-stateView.viewRoot.y * (1 - _citrusObject.parallax)) + _citrusObject.offsetY;
+				rotation = _physicsComponent.rotation;
+				
+			} else {
+				
+				x = _citrusObject.x + (-stateView.viewRoot.x * (1 - _citrusObject.parallax)) + _citrusObject.offsetX * scaleX;
+				y = _citrusObject.y + (-stateView.viewRoot.y * (1 - _citrusObject.parallax)) + _citrusObject.offsetY;
+				rotation = _citrusObject.rotation;
+			}
+			
+			visible = _citrusObject.visible;
 			registration = _citrusObject.registration;
 			view = _citrusObject.view;
 			animation = _citrusObject.animation;
@@ -195,6 +235,8 @@ package com.citrusengine.view.spriteview
 			
 			if (content is Bitmap)
 				Bitmap(content).smoothing = true;
+				
+			moveRegistrationPoint(_citrusObject.registration);
 		}
 		
 		private function handleContentIOError(e:IOErrorEvent):void 

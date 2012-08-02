@@ -239,13 +239,56 @@
     <Property name="width">37.15</Property>
     <Property name="height">116.4</Property>
   </CitrusObject>
+  <CitrusObject name="CitrusSprite46" className="com.citrusengine.objects.CitrusSprite">
+    <Property name="x">724</Property>
+    <Property name="y">460</Property>
+    <Property name="width">1459</Property>
+    <Property name="height">950</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group"></Property>
+    <Property name="view">art/fondos/banditJail1c.swf</Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">420</Property>
+    <Property name="registration">center</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform47" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1165</Property>
+    <Property name="y">125</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">578</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Sensor23" className="com.citrusengine.objects.platformer.Sensor">
+    <Property name="isLadder">true</Property>
+    <Property name="width">30</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1327</Property>
+    <Property name="y">658</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="height">352</Property>
+  </CitrusObject>
   <CitrusObject name="Baddy23" className="com.citrusengine.objects.platformer.Baddy">
     <Property name="speed">1.3</Property>
     <Property name="enemyKillVelocity">3</Property>
-    <Property name="startingDirection">right</Property>
+    <Property name="startingDirection">left</Property>
     <Property name="hurtDuration">400</Property>
-    <Property name="leftBound">-10</Property>
-    <Property name="rightBound">10</Property>
+    <Property name="leftBound">-100000</Property>
+    <Property name="rightBound">100000</Property>
     <Property name="enemyClass">com.citrusengine.objects.platformer.Hero</Property>
     <Property name="gravity">1.6</Property>
     <Property name="x">599</Property>
@@ -260,21 +303,8 @@
     <Property name="width">30</Property>
     <Property name="height">30</Property>
   </CitrusObject>
-  <CitrusObject name="CitrusSprite46" className="com.citrusengine.objects.CitrusSprite">
-    <Property name="x">724</Property>
-    <Property name="y">460</Property>
-    <Property name="width">1459</Property>
-    <Property name="height">950</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group"></Property>
-    <Property name="view">art/fondos/banditJail1c.swf</Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">420</Property>
-    <Property name="registration">center</Property>
-  </CitrusObject>
   <CitrusObject name="Coin24" className="com.citrusengine.objects.platformer.Coin">
-    <Property name="collectorClass">props.Lyllia</Property>
+    <Property name="collectorClass">code.lyllia.Lyllia</Property>
     <Property name="isLadder">false</Property>
     <Property name="width">30</Property>
     <Property name="gravity">1.6</Property>
@@ -290,7 +320,7 @@
     <Property name="height">30</Property>
   </CitrusObject>
   <CitrusObject name="Coin25" className="com.citrusengine.objects.platformer.Coin">
-    <Property name="collectorClass">props.Lyllia</Property>
+    <Property name="collectorClass">code.lyllia.Lyllia</Property>
     <Property name="isLadder">false</Property>
     <Property name="width">30</Property>
     <Property name="gravity">1.6</Property>
@@ -323,7 +353,7 @@
   </CitrusObject>
   <CitrusObject name="timeDestructible23" className="props.timeDestructible">
     <Property name="timeToBanish">500</Property>
-    <Property name="destroyerClass">props.Lyllia</Property>
+    <Property name="destroyerClass">code.lyllia.Lyllia</Property>
     <Property name="hitPoints">10</Property>
     <Property name="gravity">1.6</Property>
     <Property name="x">360</Property>
@@ -350,20 +380,5 @@
     <Property name="offsetX">0</Property>
     <Property name="offsetY">0</Property>
     <Property name="registration">center</Property>
-  </CitrusObject>
-  <CitrusObject name="Sensor23" className="com.citrusengine.objects.platformer.Sensor">
-    <Property name="isLadder">true</Property>
-    <Property name="width">30</Property>
-    <Property name="gravity">1.6</Property>
-    <Property name="x">1327</Property>
-    <Property name="y">658</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group">0</Property>
-    <Property name="view"></Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">0</Property>
-    <Property name="registration">center</Property>
-    <Property name="height">352</Property>
   </CitrusObject>
 </GameState>

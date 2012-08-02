@@ -1,9 +1,12 @@
 package com.citrusengine.core
 {
+
+	import com.citrusengine.system.Entity;
+	import com.citrusengine.system.components.ViewComponent;
 	import com.citrusengine.view.CitrusView;
 	import com.citrusengine.view.spriteview.SpriteView;
+
 	import flash.display.Sprite;
-	
 	
 	/**
 	 * The State class is very important. It usually contains the logic for a particular state the game is in.
@@ -12,7 +15,7 @@ package com.citrusengine.core
 	 * create a state that represents all your levels. You can get and set the reference to your active
 	 * state via the CitrusEngine class.
 	 */	
-	public class State extends Sprite
+	public class State extends Sprite implements IState
 	{
 		private var _objects:Vector.<CitrusObject> = new Vector.<CitrusObject>();
 		private var _view:CitrusView;
@@ -86,8 +89,13 @@ package com.citrusengine.core
 			{
 				var garbageObject:CitrusObject = garbage[i];
 				_objects.splice(_objects.indexOf(garbageObject), 1);
+				
+				if (garbageObject is Entity)
+					_view.removeArt((garbageObject as Entity).components["view"]);				
+				else
+					_view.removeArt(garbageObject);
+				
 				garbageObject.destroy();
-				_view.removeArt(garbageObject);
 			}
 			
 			//Update the input object
@@ -107,6 +115,13 @@ package com.citrusengine.core
 			_objects.push(object);
 			_view.addArt(object);
 			return object;
+		}
+		
+		public function addEntity(entity:Entity, view:ViewComponent):Entity {
+			
+			_objects.push(entity);
+			_view.addArt(view);
+			return entity;
 		}
 		
 		/**

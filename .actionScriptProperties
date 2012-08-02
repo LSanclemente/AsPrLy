@@ -24,7 +24,9 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/automation_agent.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="3" linkType="1" path="/Users/leonardo/Dropbox/assault princess/resources/ce2/Source/Box2D.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/Users/leonardo/Dropbox/Assault Princess/citrus-engine-read-only/debug_nape.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/Users/leonardo/Dropbox/Assault Princess/citrus-engine-read-only/Box2D.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/Users/leonardo/Dropbox/Assault Princess/citrus-engine-read-only/release_nape.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
