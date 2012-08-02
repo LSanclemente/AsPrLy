@@ -1,0 +1,149 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Input.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KeyboardEvent</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">Input</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">JUST_PRESSED</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">DOWN</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 1;
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">JUST_RELEASED</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 2;
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">UP</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 3;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_keys</span>:<span class="ActionScriptDefault_Text">Dictionary</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_keysReleased</span>:<span class="ActionScriptDefault_Text">Vector</span><span class="ActionScriptBracket/Brace">.&lt;</span><span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">&gt;</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_initialized</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_enabled</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Input</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_keys</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Dictionary</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_keysReleased</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Vector</span><span class="ActionScriptBracket/Brace">.&lt;</span><span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">&gt;</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Sets and determines whether or not keypresses will be
+         * registered through the Input class. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">enabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_enabled</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">enabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_enabled</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_enabled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ce</span>:<span class="ActionScriptDefault_Text">CitrusEngine</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CitrusEngine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_enabled</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_DOWN</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyDown</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_UP</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyUp</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_DOWN</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyDown</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_UP</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyUp</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method should be called AFTER everything has gathered input data from it for this tick.
+         * Implementors, you don't need to call this function. Citrus Engine does it for you.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_enabled</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">key</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">key</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">JUST_PRESSED</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">key</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">DOWN</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">_keysReleased</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Citrus engine calls this function for you. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">initialize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_initialized</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_initialized</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ce</span>:<span class="ActionScriptDefault_Text">CitrusEngine</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CitrusEngine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_DOWN</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyDown</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">KEY_UP</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onKeyUp</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Says YES! if the key you requested is being pressed. Says nah if naht. 
+         * @param keyCode a "code" representing a key on the keyboard. Use Flash's Keyboard class constants if you please. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">isDown</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">DOWN</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Says YES! if the key you requested was pressed between last tick and this tick. Says nah if naht. 
+         * @param keyCode a "code" representing a key on the keyboard. Use Flash's Keyboard class constants if you please. 
+         */</span>    
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">justPressed</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">JUST_PRESSED</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Says YES! if the key you requested was released between last keick and this tick. Says nah if naht. 
+         * @param keyCode a "code" representing a key on the keyboard. Use Flash's Keyboard class constants if you please. 
+         */</span>    
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">justReleased</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_keysReleased</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns an unsigned integer representing the key's current state.
+         * @param keyCode a "code" representing a key on the keyboard. Use Flash's Keyboard class constants if you please. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getState</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_keysReleased</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">JUST_RELEASED</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">UP</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onKeyDown</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">JUST_PRESSED</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onKeyUp</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">KeyboardEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">delete</span> <span class="ActionScriptDefault_Text">_keys</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptDefault_Text">_keysReleased</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">keyCode</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

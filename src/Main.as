@@ -22,7 +22,7 @@ package
 	
 	import props.Destructible;
 	import props.Lyllia;
-	import props.timeDestructible;
+	import props.TimeDestructible;
 	
 	public class Main extends CitrusEngine 
 	{
@@ -32,7 +32,7 @@ package
 		{
 			super();
 			
-			var classes:Array = [Baddy, CitrusSprite, Coin, Crate, Destructible, Lyllia, timeDestructible, Missile, MovingPlatform, PhysicsObject, Platform, RewardBox, Sensor];
+			var classes:Array = [Baddy, CitrusSprite, Coin, Crate, Destructible, Lyllia, TimeDestructible, Missile, MovingPlatform, PhysicsObject, Platform, RewardBox, Sensor];
 			console.addCommand("play", handlePlayCommand);
 			createInstructionText();
 		}

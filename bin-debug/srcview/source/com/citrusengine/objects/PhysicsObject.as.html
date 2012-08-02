@@ -1,0 +1,400 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>PhysicsObject.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">objects</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Collision</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Shapes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2PolygonShape</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Collision</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Shapes</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2Shape</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Common</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">V2</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Joints</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2Joint</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Joints</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2JointDef</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2Body</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2BodyDef</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2Fixture</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2FixtureDef</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">physics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CollisionCategories</span>;
+    
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusEngine</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusObject</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">physics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Box2D</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ISpriteView</span>;
+    
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MovieClip</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * You should extend this class to take advantage of Box2D. This class provides template methods for defining
+     * and creating Box2D bodies, fixtures, shapes, and joints. If you are not familiar with Box2D, you should first
+     * learn about it via the "Box2D Manual" (Google it).
+     */</span>    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">PhysicsObject</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">CitrusObject</span> <span class="ActionScriptReserved">implements</span> <span class="ActionScriptDefault_Text">ISpriteView</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The speed at which this object will be affected by gravity. 
+         */</span>
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"1.6"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">gravity</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1.6;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_ce</span>:<span class="ActionScriptDefault_Text">CitrusEngine</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_box2D</span>:<span class="ActionScriptDefault_Text">Box2D</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_bodyDef</span>:<span class="ActionScriptDefault_Text">b2BodyDef</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_body</span>:<span class="ActionScriptDefault_Text">b2Body</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_shape</span>:<span class="ActionScriptDefault_Text">b2Shape</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_fixtureDef</span>:<span class="ActionScriptDefault_Text">b2FixtureDef</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_fixture</span>:<span class="ActionScriptDefault_Text">b2Fixture</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_inverted</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_parallax</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_animation</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">""</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_visible</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_x</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_y</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_view</span>:<span class="ActionScriptOperator">*</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">MovieClip</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_rotation</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_width</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_height</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_group</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_offsetX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_offsetY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_registration</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"center"</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Make</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">x</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">y</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">height</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">view</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">PhysicsObject</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">MovieClip</span>;
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">PhysicsObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">x</span>: <span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">y</span>: <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">width</span>: <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">height</span>: <span class="ActionScriptDefault_Text">height</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">view</span>: <span class="ActionScriptDefault_Text">view</span> <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates an instance of a PhysicsObject. Natively, this object does not default to any graphical representation,
+         * so you will need to set the "view" property in the params parameter.
+         * 
+         * &lt;p&gt;You'll notice that the PhysicsObject constructor calls a bunch of functions that start with "define" and "create".
+         * This is how the Box2D objects are created. You should override these methods in your own PhysicsObject implementation
+         * if you need additional Box2D functionality. Please see provided examples of classes that have overridden
+         * the PhysicsObject.&lt;/p&gt;
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">PhysicsObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_ce</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CitrusEngine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_box2D</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">state</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getFirstObjectByType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Box2D</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Box2D</span>;
+            
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Cannot create PhysicsObject when a Box2D object has not been added to the state."</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//Override these to customize your Box2D initialization. Things must be done in this order.
+</span>            <span class="ActionScriptDefault_Text">defineBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">createBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">createShape</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">defineFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">createFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">defineJoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">createJoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_shape</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * You should override this method to extend the functionality of your physics object. This is where you will 
+         * want to do any velocity/force logic. By default, this method also updates the gravitatonal effect on the object.
+         * I have chosen to implement gravity in each individual object instead of globally via Box2D so that it is easy
+         * to create objects that defy gravity (like birds or bullets). This is difficult to do naturally in Box2D. Instead,
+         * you can simply set your PhysicsObject's gravity property to 0, and baddabing: no gravity. 
+         */</span>        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">timeDelta</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">b2Body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2_dynamicBody</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">velocity</span>:<span class="ActionScriptDefault_Text">V2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetLinearVelocity</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">gravity</span>;
+                <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetLinearVelocity</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">x</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetPosition</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_x</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">x</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pos</span>:<span class="ActionScriptDefault_Text">V2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetPosition</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_x</span>;
+                <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAngle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+            
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetPosition</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_y</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">pos</span>:<span class="ActionScriptDefault_Text">V2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetPosition</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_y</span>;
+                <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">pos</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAngle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+            
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">parallax</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_parallax</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"1"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">parallax</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_parallax</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">rotation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAngle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">*</span> 180 <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PI</span>;
+            <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_rotation</span> <span class="ActionScriptOperator">*</span> 180 <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PI</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">rotation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_rotation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PI</span> <span class="ActionScriptOperator">/</span> 180;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetTransform</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetPosition</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_rotation</span><span class="ActionScriptBracket/Brace">)</span>; 
+        <span class="ActionScriptBracket/Brace">}</span>
+            
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_group</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_group</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_visible</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptOperator">*</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_view</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">""</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">browse</span><span class="ActionScriptOperator">=</span><span class="ActionScriptString">"true"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">animation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_animation</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">inverted</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_inverted</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">offsetX</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_offsetX</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">offsetX</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_offsetX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">offsetY</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_offsetY</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"0"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">offsetY</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_offsetY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">registration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_registration</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"center"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">registration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_registration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This can only be set in the constructor parameters. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_width</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"30"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">width</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_width</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_initialized</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScripttrace">trace</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Warning: You cannot set "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptReserved">this</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" width after it has been created. Please set it in the constructor."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This can only be set in the constructor parameters. 
+         */</span>    
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">height</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">Property</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"30"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">height</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">scale</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_initialized</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScripttrace">trace</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Warning: You cannot set "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptReserved">this</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" height after it has been created. Please set it in the constructor."</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * A direction reference to the Box2D body associated with this object.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">body</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">b2Body</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_body</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to provide additional definition to the Box2D body object. 
+         */</span>        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">defineBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_bodyDef</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">b2BodyDef</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">b2Body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2_dynamicBody</span>;
+            <span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">position</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">v2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">V2</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_y</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">angle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_rotation</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to customize the Box2D body object. 
+         */</span>    
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_body</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_box2D</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">world</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CreateBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetUserData</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to customize the Box2D shape object.
+         * The PhysicsObject creates a rectangle by default, but you can replace this method's
+         * definition and instead create a custom shape, such as a line or circle.
+         */</span>    
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createShape</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_shape</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">b2PolygonShape</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">b2PolygonShape</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_shape</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetAsBox</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_width</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">_height</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to provide additional definition to the Box2D fixture object. 
+         */</span>    
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">defineFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_fixtureDef</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">b2FixtureDef</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">shape</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_shape</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">density</span> <span class="ActionScriptOperator">=</span> 1;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">friction</span> <span class="ActionScriptOperator">=</span> 0.6;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">restitution</span> <span class="ActionScriptOperator">=</span> 0.3;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">categoryBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Get</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Level"</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">maskBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to customize the Box2D fixture object. 
+         */</span>    
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_fixture</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CreateFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to provide additional definition to the Box2D joint object.
+         * A joint is not automatically created, because joints require two bodies. Therefore, if you need to create a joint,
+         * you will also need to create additional bodies, fixtures and shapes, and then also instantiate a new b2JointDef
+         * and b2Joint object.
+         */</span>    
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">defineJoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This method will often need to be overriden to customize the Box2D joint object. 
+         * A joint is not automatically created, because joints require two bodies. Therefore, if you need to create a joint,
+         * you will also need to create additional bodies, fixtures and shapes, and then also instantiate a new b2JointDef
+         * and b2Joint object.
+         */</span>        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createJoint</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

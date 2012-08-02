@@ -38,7 +38,7 @@
 				view.cameraTarget = _lyllia;
 				view.cameraOffset = new MathVector(stage.stageWidth -500, stage.stageHeight -100 );
 				view.cameraEasing = new MathVector(1, .5);
-				view.cameraBounds = new Rectangle(0, 0, 1500, 1500);
+				view.cameraBounds = new Rectangle(0, 0, 22153, 3671	);
 			}
 		}
 	}

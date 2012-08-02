@@ -15,21 +15,22 @@ package props
 	 * ...
 	 * @author 
 	 */
-	public class timeDestructible extends Destructible
+	public class TimeDestructible extends Destructible
 	{
 		[Property(value = "500")]
 		public var timeToBanish:Number = 500
-		
+			
 		protected var _banishTimeoutID:Number;
 		
+		[Property(value = "Lyllia")]
 		private var _destroyerClass:Class = Lyllia;
 		
-		public static function Make(name:String, x:Number, y:Number, width:Number, height:Number):timeDestructible
+		public static function Make(name:String, x:Number, y:Number, width:Number, height:Number):TimeDestructible
 		{
-			return new timeDestructible(name, { x: x, y: y, width: width, height: height } );
+			return new TimeDestructible(name, { x: x, y: y, width: width, height: height } );
 		}
 		
-		public function timeDestructible(name:String, params:Object = null )
+		public function TimeDestructible(name:String, params:Object = null )
 		{
 			super(name, params);
 		}

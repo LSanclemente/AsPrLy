@@ -1,0 +1,75 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>ISignal.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     *
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptinterface">interface</span> <span class="ActionScriptDefault_Text">ISignal</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * An optional array of classes defining the types of parameters sent to listeners.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span>;
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * If the ISignal should use strict mode or not. Useful if you would like to use the ...rest
+         * argument or if you don't want an exact match up of listener arguments and signal 
+         * arguments.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>;
+        
+        <span class="ActionScriptASDoc">/** The current number of listeners for the signal. */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">numListeners</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Subscribes a listener for the signal.
+         * @param    listener A function with arguments
+         * that matches the value classes dispatched by the signal.
+         * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
+         * @return a ISignalBinding, which contains the Function passed as the parameter
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Subscribes a one-time listener for this signal.
+         * The signal will remove the listener automatically the first time it is called,
+         * after the dispatch to all listeners is complete.
+         * @param    listener A function with arguments
+         * that matches the value classes dispatched by the signal.
+         * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
+         * @return a ISignalBinding, which contains the Function passed as the parameter
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addOnce</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Dispatches an object to listeners.
+         * @param    valueObjects    Any number of parameters to send to listeners. Will be type-checked against valueClasses.
+         * @throws    ArgumentError    &lt;code&gt;ArgumentError&lt;/code&gt;:    valueObjects are not compatible with valueClasses.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatch</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Unsubscribes a listener from the signal.
+         * @param    listener
+         * @return a ISignalBinding, which contains the Function passed as the parameter
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Unsubscribes all listeners from the signal.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

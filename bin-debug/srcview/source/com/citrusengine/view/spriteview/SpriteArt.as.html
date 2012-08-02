@@ -1,0 +1,216 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SpriteArt.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">spriteview</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ISpriteView</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Bitmap</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">DisplayObject</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">FrameLabel</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Loader</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MovieClip</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Sprite</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IOErrorEvent</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">net</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">URLRequest</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getDefinitionByName</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * This is the class that all art objects use for the SpriteView state view. If you are using the SpriteView (as opposed to the blitting view, for instance),
+     * then all your graphics will be an instance of this class. This class does the following things:
+     * 
+     * 1) Creates the appropriate graphic depending on your CitrusObject's view property (loader, sprite, or bitmap), and loads it if it is a non-embedded graphic.
+     * 2) Aligns the graphic with the appropriate registration (topLeft or center).
+     * 3) Calls the MovieClip's appropriate frame label based on the CitrusObject's animation property.
+     * 4) Updates the graphic's properties to be in-synch with the CitrusObject's properties once per frame.
+     * 
+     * These objects will be created by the Citrus Engine's SpriteView, so you should never make them yourself. When you use state.getArt() to gain access to your game's graphics
+     * (for adding click events, for instance), you will get an instance of this object. It extends Sprite, so you can do all the expected stuff with it, 
+     * such as add click listeners, change the alpha, etc.
+     * 
+     * 
+     **/</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SpriteArt</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">Sprite</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The content property is the actual display object that your game object is using. For graphics that are loaded at runtime
+         * (not embedded), the content property will not be available immediately. You can listen to the COMPLETE event on the loader
+         * (or rather, the loader's contentLoaderInfo) if you need to know exactly when the graphic will be loaded.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">content</span>:<span class="ActionScriptDefault_Text">DisplayObject</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * For objects that are loaded at runtime, this is the object that loades them. Then, once they are loaded, the content
+         * property is assigned to loader.content.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">loader</span>:<span class="ActionScriptDefault_Text">Loader</span>;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_citrusObject</span>:<span class="ActionScriptDefault_Text">ISpriteView</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_registration</span>:<span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_view</span>:<span class="ActionScriptOperator">*</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_animation</span>:<span class="ActionScriptDefault_Text">String</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_group</span>:<span class="ActionScriptDefault_Text">int</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SpriteArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">object</span>:<span class="ActionScriptDefault_Text">ISpriteView</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_citrusObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">object</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">registration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_registration</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">registration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_registration</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+                
+            <span class="ActionScriptDefault_Text">_registration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_registration</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">"topLeft"</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> 0;
+                <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_registration</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">"center"</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">/</span> 2;
+                <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">/</span> 2;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptOperator">*</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_view</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptComment">// view property is a path to an image?
+</span>                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">classString</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_view</span>;
+                    <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">suffix</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">classString</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">substring</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">classString</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> 4<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">toLowerCase</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">suffix</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">".swf"</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">suffix</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">".png"</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">suffix</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">".gif"</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">suffix</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptString">".jpg"</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">loader</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Loader</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">loader</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">loader</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">contentLoaderInfo</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">COMPLETE</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handleContentLoaded</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">loader</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">contentLoaderInfo</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">IOErrorEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IO_ERROR</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handleContentIOError</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">loader</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">load</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">URLRequest</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">classString</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptComment">// view property is a fully qualified class name in string form.
+</span>                    <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">artClass</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getDefinitionByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">classString</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Class</span>;
+                        <span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">artClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_view</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptComment">//view property is a class reference
+</span>                    <span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"SpriteArt doesn't know how to create a graphic object from the provided CitrusObject "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">hasOwnProperty</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"initialize"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptString">"initialize"</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">animation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_animation</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">animation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_animation</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_animation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">MovieClip</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">mc</span>:<span class="ActionScriptDefault_Text">MovieClip</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">MovieClip</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_animation</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">_animation</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptString">""</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">hasAnimation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_animation</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">mc</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">gotoAndStop</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_animation</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_group</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">int</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_group</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISpriteView</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_citrusObject</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">stateView</span>:<span class="ActionScriptDefault_Text">SpriteView</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">//position = object position + (camera position * inverse parallax)
+</span>            <span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">stateView</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptBracket/Brace">(</span>1 <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parallax</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">offsetX</span>;
+            <span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">stateView</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptBracket/Brace">(</span>1 <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parallax</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">offsetY</span>;
+            <span class="ActionScriptDefault_Text">rotation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">rotation</span>;
+            <span class="ActionScriptDefault_Text">visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span>;
+            <span class="ActionScriptDefault_Text">scaleX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">inverted</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptOperator">-</span>1 : 1;
+            <span class="ActionScriptDefault_Text">registration</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">registration</span>;
+            <span class="ActionScriptDefault_Text">view</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span>;
+            <span class="ActionScriptDefault_Text">animation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">animation</span>;
+            <span class="ActionScriptDefault_Text">group</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">group</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">hasAnimation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">animation</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">anim</span>:<span class="ActionScriptDefault_Text">FrameLabel</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">MovieClip</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">currentLabels</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">anim</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">animation</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">handleContentLoaded</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">loader</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">content</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Bitmap</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">Bitmap</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">content</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">smoothing</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">handleContentIOError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">IOErrorEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">text</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

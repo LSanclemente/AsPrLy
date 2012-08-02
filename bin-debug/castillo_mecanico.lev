@@ -1,0 +1,1226 @@
+<GameState name="Untitled Level">
+  <CitrusObject name="Platform0" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">513.5</Property>
+    <Property name="y">436</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1019</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform1" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">416</Property>
+    <Property name="y">228</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">824</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform3" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">-10</Property>
+    <Property name="y">224.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">451</Property>
+  </CitrusObject>
+  <CitrusObject name="Lyllia6" className="code.lyllia.Lyllia">
+    <Property name="acceleration">1</Property>
+    <Property name="maxVelocity">8</Property>
+    <Property name="jumpHeight">14</Property>
+    <Property name="jumpAcceleration">0.9</Property>
+    <Property name="hurtDuration">1000</Property>
+    <Property name="hurtVelocityX">6</Property>
+    <Property name="hurtVelocityY">10</Property>
+    <Property name="enemyClass">com.citrusengine.objects.platformer.Baddy</Property>
+    <Property name="friction">10</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6957</Property>
+    <Property name="y">-2681</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view">art/sprites/lyllia.swf</Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">42.8</Property>
+    <Property name="height">123.4</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform7" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">661.5</Property>
+    <Property name="y">14</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1317</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform8" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1301</Property>
+    <Property name="y">225</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">400</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform10" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">977.5</Property>
+    <Property name="y">394</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">63</Property>
+    <Property name="height">52</Property>
+  </CitrusObject>
+  <CitrusObject name="Destructible11" className="code.props.Destructible">
+    <Property name="hitPoints">1</Property>
+    <Property name="destroyerClass">com.citrusengine.objects.platformer.Missile</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1110.5</Property>
+    <Property name="y">444</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">179</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform12" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1256.5</Property>
+    <Property name="y">434</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">129</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform13" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1007</Property>
+    <Property name="y">828</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">756</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform14" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1207</Property>
+    <Property name="y">665.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">433</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform15" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">1181</Property>
+    <Property name="y">1190</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">360</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform15" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">2</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">1841</Property>
+    <Property name="y">1083</Property>
+    <Property name="endX">1470</Property>
+    <Property name="endY">1083</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">228</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform16" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">2</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">2077</Property>
+    <Property name="y">972</Property>
+    <Property name="endX">2448</Property>
+    <Property name="endY">972</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">228</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform17" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">3383.5</Property>
+    <Property name="y">897</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1511</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform23" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">3092</Property>
+    <Property name="y">837</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">106</Property>
+    <Property name="height">90</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform25" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">3616</Property>
+    <Property name="y">836.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">108</Property>
+    <Property name="height">91</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform26" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">3357</Property>
+    <Property name="y">764</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">108</Property>
+    <Property name="height">236</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform19" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4456</Property>
+    <Property name="y">732</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">411</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform23" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4909</Property>
+    <Property name="y">225</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">411</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform24" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4909</Property>
+    <Property name="y">563</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">411</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform25" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4456</Property>
+    <Property name="y">394</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">411</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform28" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5784</Property>
+    <Property name="y">0.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform29" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6084</Property>
+    <Property name="y">36</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform30" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5524.5</Property>
+    <Property name="y">144.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">289</Property>
+    <Property name="height">31</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform31" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5522</Property>
+    <Property name="y">-123</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform32" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6344</Property>
+    <Property name="y">8</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform33" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6534</Property>
+    <Property name="y">-76</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform34" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6711</Property>
+    <Property name="y">-173</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform35" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">7107.5</Property>
+    <Property name="y">-284</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">469</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform36" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">7327</Property>
+    <Property name="y">-475</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">408</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform37" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">7107.5</Property>
+    <Property name="y">-665</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">469</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform38" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5321</Property>
+    <Property name="y">-219</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform39" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4255.5</Property>
+    <Property name="y">-326</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1765</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform35" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">7</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">4592</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">4592</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform36" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">9</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">4042</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">4042</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform37" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">8</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">4319</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">4319</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform38" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">5</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">4868</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">4868</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform39" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">10</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">3768</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">3768</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform40" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">11</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">3491</Property>
+    <Property name="y">-727</Property>
+    <Property name="endX">3491</Property>
+    <Property name="endY">-495</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">85</Property>
+    <Property name="height">310</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform41" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">3</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">3286</Property>
+    <Property name="y">-326</Property>
+    <Property name="endX">3286</Property>
+    <Property name="endY">-800</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">100</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform43" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5219</Property>
+    <Property name="y">-1009</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform44" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5376</Property>
+    <Property name="y">-1060</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform45" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">5533.5</Property>
+    <Property name="y">-1102.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform46" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">3</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">5697</Property>
+    <Property name="y">-1124</Property>
+    <Property name="endX">6097</Property>
+    <Property name="endY">-1124</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">100</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform47" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">3</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">6231</Property>
+    <Property name="y">-1522</Property>
+    <Property name="endX">6231</Property>
+    <Property name="endY">-1122</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">100</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform48" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">3</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">6112</Property>
+    <Property name="y">-1522</Property>
+    <Property name="endX">6112</Property>
+    <Property name="endY">-1922</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">100</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform49" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">3</Property>
+    <Property name="waitForPassenger">false</Property>
+    <Property name="x">6231</Property>
+    <Property name="y">-2322</Property>
+    <Property name="endX">6231</Property>
+    <Property name="endY">-1922</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">100</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform50" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6413</Property>
+    <Property name="y">-2382</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform51" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6564</Property>
+    <Property name="y">-2462</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform52" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6801</Property>
+    <Property name="y">-2463</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform53" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">6958</Property>
+    <Property name="y">-2537</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">77</Property>
+    <Property name="height">77</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform54" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">8134.5</Property>
+    <Property name="y">-2565</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">2000</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform56" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">8134.5</Property>
+    <Property name="y">-2783</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">2000</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Destructible57" className="code.props.Destructible">
+    <Property name="hitPoints">1</Property>
+    <Property name="destroyerClass">com.citrusengine.objects.platformer.Missile</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">7759</Property>
+    <Property name="y">-2674.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">221</Property>
+  </CitrusObject>
+  <CitrusObject name="Destructible58" className="code.props.Destructible">
+    <Property name="hitPoints">1</Property>
+    <Property name="destroyerClass">com.citrusengine.objects.platformer.Missile</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">8423</Property>
+    <Property name="y">-2678.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">231</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform59" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">3461</Property>
+    <Property name="y">-740.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">289</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform60" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9387</Property>
+    <Property name="y">-2643.95</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">-17.481684046919614</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">526</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform61" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9379</Property>
+    <Property name="y">-2862</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">-17.7</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">526</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform62" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9696.5</Property>
+    <Property name="y">-2941</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">131</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Destructible63" className="code.props.Destructible">
+    <Property name="hitPoints">1</Property>
+    <Property name="destroyerClass">com.citrusengine.objects.platformer.Missile</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9834.5</Property>
+    <Property name="y">-2941</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">161</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform64" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10160</Property>
+    <Property name="y">-2941</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">506</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform65" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10023.5</Property>
+    <Property name="y">-2722</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">779</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform66" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9746</Property>
+    <Property name="y">-3037.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">185</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform67" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9833.5</Property>
+    <Property name="y">-3115</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">179</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform68" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">9920</Property>
+    <Property name="y">-3028</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">202</Property>
+  </CitrusObject>
+  <CitrusObject name="MovingPlatform71" className="com.citrusengine.objects.platformer.MovingPlatform">
+    <Property name="speed">5</Property>
+    <Property name="waitForPassenger">true</Property>
+    <Property name="x">10750.5</Property>
+    <Property name="y">-2722</Property>
+    <Property name="endX">10734</Property>
+    <Property name="endY">-5576</Property>
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">603</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform72" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">11069</Property>
+    <Property name="y">-4146</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">2878</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform73" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10398</Property>
+    <Property name="y">-4270.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">2628.5</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform42" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">4256</Property>
+    <Property name="y">-897</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1760</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform75" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10226.5</Property>
+    <Property name="y">-5570</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">313</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform76" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">11240</Property>
+    <Property name="y">-5570</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">313</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform77" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">11382</Property>
+    <Property name="y">-5925</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">680</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform78" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10085</Property>
+    <Property name="y">-5925</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">680</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform79" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10733.5</Property>
+    <Property name="y">-6280</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">1327</Property>
+    <Property name="height">30</Property>
+  </CitrusObject>
+  <CitrusObject name="Destructible80" className="code.props.Destructible">
+    <Property name="hitPoints">1</Property>
+    <Property name="destroyerClass">com.citrusengine.objects.platformer.Missile</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10398</Property>
+    <Property name="y">-2800.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">127</Property>
+  </CitrusObject>
+  <CitrusObject name="Platform81" className="com.citrusengine.objects.platformer.Platform">
+    <Property name="oneWay">false</Property>
+    <Property name="gravity">1.6</Property>
+    <Property name="x">10398</Property>
+    <Property name="y">-2895.5</Property>
+    <Property name="parallax">1</Property>
+    <Property name="rotation">0</Property>
+    <Property name="group">0</Property>
+    <Property name="view"></Property>
+    <Property name="offsetX">0</Property>
+    <Property name="offsetY">0</Property>
+    <Property name="registration">center</Property>
+    <Property name="width">30</Property>
+    <Property name="height">61</Property>
+  </CitrusObject>
+</GameState>

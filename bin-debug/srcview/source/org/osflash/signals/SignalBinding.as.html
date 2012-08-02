@@ -1,0 +1,224 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SignalBinding.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     * The SignalBinding class represents a signal binding.
+     *
+     * @author Robert Penner
+     * @author Joa Ebert
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">final</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SignalBinding</span> <span class="ActionScriptReserved">implements</span> <span class="ActionScriptDefault_Text">ISignalBinding</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;signal&lt;/code&gt; property.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_signal</span>:<span class="ActionScriptDefault_Text">ISignal</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;enabled&lt;/code&gt; property.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_enabled</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;strict&lt;/code&gt; property.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_strict</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;listener&lt;/code&gt; property.
+         *
+         * Visible in the signals package for fast access.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_listener</span>:<span class="ActionScriptDefault_Text">Function</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;once&lt;/code&gt; property.
+         *
+         * Visible in the signals package for fast access.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_once</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Private backing variable for the &lt;code&gt;priority&lt;/code&gt; property.
+         *
+         * Visible in the signals package for fast access.
+         * @private
+         */</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_priority</span>:<span class="ActionScriptDefault_Text">int</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates and returns a new SignalBinding object.
+         *
+         * @param listener The listener associated with the binding.
+         * @param once Whether or not the listener should be executed only once.
+         * @param signal The signal associated with the binding.
+         * @param priority The priority of the binding.
+         *
+         * @throws ArgumentError An error is thrown if the given listener closure is &lt;code&gt;null&lt;/code&gt;.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SignalBinding</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">signal</span>:<span class="ActionScriptDefault_Text">ISignal</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_listener</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">listener</span>;
+            <span class="ActionScriptDefault_Text">_once</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">once</span>;
+            <span class="ActionScriptDefault_Text">_signal</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">signal</span>;
+            <span class="ActionScriptDefault_Text">_priority</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">priority</span>;
+            
+            <span class="ActionScriptComment">// Work out what the strict mode is from the signal and set it here. You can change
+</span>            <span class="ActionScriptComment">// the value of strict mode on the binding itself at a later date.
+</span>            <span class="ActionScriptDefault_Text">_strict</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">strict</span>;
+            
+            <span class="ActionScriptDefault_Text">verifyListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_enabled</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_once</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_strict</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptComment">// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
+</span>                <span class="ActionScriptComment">// because every valueObject look up is now in the binding and not in the ISignal. 
+</span>                <span class="ActionScriptComment">// We should possibly look at passing the value AOT?
+</span>                <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">numValueObjects</span> : <span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+                <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueObjects</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueObjects</span> <span class="ActionScriptOperator">==</span> 1<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueObjects</span> <span class="ActionScriptOperator">==</span> 2<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>1<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueObjects</span> <span class="ActionScriptOperator">==</span> 3<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>1<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>2<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">apply</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptComment">// We're going to pass everything in one bulk run so that varargs can be 
+</span>                <span class="ActionScriptComment">// passed through to the listeners
+</span>                <span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">apply</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Function</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_listener</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span>
+                    <span class="ActionScriptString">'Given listener is null.\nDid you want to set enabled to false instead?'</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">verifyListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_listener</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_once</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_priority</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * Creates and returns the string representation of the current object.
+         *
+         * @return The string representation of the current object.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">toString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptString">"[SignalBinding listener: "</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">", once: "</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_once</span>
+                                            <span class="ActionScriptOperator">+</span><span class="ActionScriptString">", priority: "</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_priority</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">", enabled: "</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">_enabled</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">"]"</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">enabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_enabled</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">enabled</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>    <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">_enabled</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_strict</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span> 
+            <span class="ActionScriptDefault_Text">_strict</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            
+            <span class="ActionScriptComment">// Check that when we move from one strict mode to another strict mode and verify the 
+</span>            <span class="ActionScriptComment">// listener again.
+</span>            <span class="ActionScriptDefault_Text">verifyListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">verifyListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>: <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Given listener is null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">_signal</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Internal signal reference has not been set yet.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">numListenerArgs</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">argumentString</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numListenerArgs</span> <span class="ActionScriptOperator">==</span> 1<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptString">'argument'</span> : <span class="ActionScriptString">'arguments'</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_strict</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numListenerArgs</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">_signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Listener has '</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">numListenerArgs</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">' '</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">argumentString</span>
+                            <span class="ActionScriptOperator">+</span><span class="ActionScriptString">' but it needs to be '</span><span class="ActionScriptOperator">+</span>
+                            <span class="ActionScriptDefault_Text">_signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">' to match the signal\'s value classes.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index>
+	<title>Source of AsPrLyBeta</title>
+	<nodes>
+	</nodes>
+	<zipfile label="Download source (ZIP, 3K)" url="AsPrLyBeta.zip">
+	</zipfile>
+	<sdklink label="Download Flex SDK" url="http://www.adobe.com/go/flex4_sdk_download">
+	</sdklink>
+</index>

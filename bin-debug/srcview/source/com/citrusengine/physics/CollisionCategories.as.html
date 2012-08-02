@@ -1,0 +1,123 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>CollisionCategories.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">physics</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     * Box2D uses bits to represent collision categories. If you don't understand binary and bit shifting, 
+     * then it may get kind of confusing trying to work with Box2D categories, so I've created this class
+     * so that those bits can be accessed by creating and referring to String representations.
+     * 
+     * The bit system is actually really great because any combination of categories can actually be
+     * represented by a single integer value. However, using bitwise operations is not always readable
+     * for everyone, so this call is meant to be as light of a wrapper as possible for managing collision
+     * categories with the Citrus Engine.
+     * 
+     * The constructor of the Citrus Engine's Box2D  class creates a couple of initial categories for you to use:
+     * GoodGuys, BadGuys, Items, Level. If you need more, you can always add more categories, but don't complicate
+     * it just for the sake of adding fun category names. The categories created by the Box2D class are used by the
+     * platformer kit that comes with Citrus Engine.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">CollisionCategories</span> 
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_allCategories</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_numCategories</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_categoryIndexes</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span>1<span class="ActionScriptOperator">,</span> 2<span class="ActionScriptOperator">,</span> 4<span class="ActionScriptOperator">,</span> 8<span class="ActionScriptOperator">,</span> 16<span class="ActionScriptOperator">,</span> 32<span class="ActionScriptOperator">,</span> 64<span class="ActionScriptOperator">,</span> 128<span class="ActionScriptOperator">,</span> 256<span class="ActionScriptOperator">,</span> 512<span class="ActionScriptOperator">,</span> 1024<span class="ActionScriptOperator">,</span> 2048<span class="ActionScriptOperator">,</span> 4096<span class="ActionScriptOperator">,</span> 8192<span class="ActionScriptOperator">,</span> 16384<span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_categoryNames</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns true if the categories in the first parameter contain the category(s) in the second parameter.
+         * @param    categories The categories to check against.
+         * @param    theCategory The category you want to know exists in the categories of the first parameter.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Has</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">categories</span>:<span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">theCategory</span>:<span class="ActionScriptDefault_Text">uint</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">categories</span> <span class="ActionScriptOperator">&amp;</span> <span class="ActionScriptDefault_Text">theCategory</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Add a category to the collision categories list.
+         * @param    categoryName The name of the category.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">categoryName</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_numCategories</span> <span class="ActionScriptOperator">==</span> 15<span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"You can only have 15 categories."</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">categoryName</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">categoryName</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_categoryIndexes</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">_numCategories</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptDefault_Text">_allCategories</span> <span class="ActionScriptOperator">|=</span> <span class="ActionScriptDefault_Text">_categoryIndexes</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">_numCategories</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptDefault_Text">_numCategories</span><span class="ActionScriptOperator">++</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Gets the category(s) integer by name. You can pass in multiple category names, and it will return the appropriate integer.
+         * @param    ...args The categories that you want the integer for.
+         * @return A signle integer representing the category(s) you passed in.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Get</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">args</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">categories</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">args</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">category</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">category</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScripttrace">trace</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Warning: "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" category does not exist."</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">continue</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptDefault_Text">categories</span> <span class="ActionScriptOperator">|=</span> <span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">categories</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns an integer representing all categories.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">GetAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_allCategories</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns an integer representing all categories except the ones whose names you pass in.
+         * @param    ...args The names of the categories you want excluded from the result.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">GetAllExcept</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">args</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">categories</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_allCategories</span>;
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">args</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">category</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">category</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScripttrace">trace</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Warning: "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" category does not exist."</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptReserved">continue</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptDefault_Text">categories</span> <span class="ActionScriptOperator">&amp;=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">~</span><span class="ActionScriptDefault_Text">_categoryNames</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">categories</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns the number zero, which means no categories. You can also just use the number zero instead of this function (but this reads better).
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">GetNone</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> 0;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

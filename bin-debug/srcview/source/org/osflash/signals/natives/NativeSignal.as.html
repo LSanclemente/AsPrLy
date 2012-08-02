@@ -1,0 +1,239 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>NativeSignal.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">natives</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ISignalBinding</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SignalBinding</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SignalBindingList</span>;
+
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">errors</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IllegalOperationError</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IEventDispatcher</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+
+    <span class="ActionScriptASDoc">/** 
+     * Allows the eventClass to be set in MXML, e.g.
+     * &lt;natives:NativeSignal id="clicked" eventType="click" target="{this}"&gt;{MouseEvent}&lt;/natives:NativeSignal&gt;
+     */</span>
+    <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">DefaultProperty</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"eventClass"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>    
+    
+    <span class="ActionScriptASDoc">/**
+     * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
+     * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
+     * It can become part of an interface.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">NativeSignal</span> <span class="ActionScriptReserved">implements</span> <span class="ActionScriptDefault_Text">INativeDispatcher</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_target</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_eventType</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_eventClass</span>:<span class="ActionScriptDefault_Text">Class</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_valueClasses</span>:<span class="ActionScriptDefault_Text">Array</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_strict</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bindings</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a NativeSignal instance to dispatch events on behalf of a target object.
+         * @param    target The object on whose behalf the signal is dispatching events.
+         * @param    eventType The type of Event permitted to be dispatched from this signal. Corresponds to Event.type.
+         * @param    eventClass An optional class reference that enables an event type check in dispatch(). Defaults to flash.events.Event if omitted.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">NativeSignal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventType</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">""</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventClass</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NIL</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">target</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">target</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">eventType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">eventType</span>;
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">eventClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">eventClass</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_eventType</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">_eventType</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_eventClass</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_eventClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">Event</span>;
+            <span class="ActionScriptDefault_Text">_valueClasses</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">_eventClass</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">ArrayElementType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Class"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_valueClasses</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">eventClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">&gt;</span> 0 <span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> : <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_strict</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">_strict</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">numListeners</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_target</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">_target</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_target</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_target</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptComment">//TODO: @throws
+</span>        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">addWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptComment">//TODO: @throws
+</span>        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">registerListenerWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addOnce</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">addOnceWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addOnceWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">registerListenerWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">true</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">binding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">binding</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filterNot</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> 
+                <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onNativeEvent</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">binding</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onNativeEvent</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NIL</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatch</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">//TODO: check if ...valueObjects can ever be null.
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Event object expected.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">!=</span> 1<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'No more than one Event object expected.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * Unlike other signals, NativeSignal does not dispatch null
+         * because it causes an exception in EventDispatcher.
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Target object cannot be null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>  <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Event object cannot be null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Event object '</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">' is not an instance of '</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Event object has incorrect type. Expected &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt; but was &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">type</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt;.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">registerListenerWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Target object cannot be null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_strict</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">!=</span> 1<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Listener for native event must declare exactly 1 argument but had '</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">'.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">registrationPossible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">binding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBinding</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> 
+                    <span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">onNativeEvent</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">insertWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">binding</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">binding</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">registrationPossible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>: <span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span>  <span class="ActionScriptDefault_Text">once</span>: <span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>: <span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">existingBinding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">existingBinding</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">existingBinding</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">once</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptComment">// If the listener was previously added, definitely don't add it again.
+</span>                    <span class="ActionScriptComment">// But throw an exception if their once value differs.
+</span>                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">IllegalOperationError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'You cannot addOnce() then add() the same listener without removing the relationship first.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+
+                <span class="ActionScriptComment">// Listener was already added.
+</span>                <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptComment">// This listener has not been added before.
+</span>            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onNativeEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>: <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>: <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">// TODO: We could in theory just cache this array, so that we're not hitting the gc
+</span>            <span class="ActionScriptComment">// every time we call onNativeEvent 
+</span>            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">singleValue</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span>;
+            
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">singleValue</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">bindingsToProcess</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

@@ -1,0 +1,194 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Reward.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">objects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">platformer</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Common</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">V2</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2Fixture</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">b2FixtureDef</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">Box2DAS</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dynamics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ContactEvent</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MathVector</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">objects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PhysicsObject</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">physics</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CollisionCategories</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getDefinitionByName</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Signal</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * The Reward class is meant to pop out of a RewardBox when the player bumps it. A Reward object is the equivelant of a "mushroom"
+     * "fire flower", or "invincible star" in the Mario games.
+     * 
+     * For each reward that you want in your game, you should make a class that extends this Reward class. If you want an ExtraLifeReward,
+     * you should make a class called ExtraLifeReward that extends Reward. Then hardcode your view, speed, impulseX, and impulseY properties.
+     * Of course, you can also add additional functionality as well by doing this.
+     * 
+     * When you create a RewardBox, you will pass the name of this class into the rewardClass property of RewardBox. That will make the RewardBox
+     * generate a Reward.
+     * 
+     * You can specify the &lt;code&gt;speed&lt;/code&gt; property to set the speed that the reward moves at.
+     * 
+     * You can specify the &lt;code&gt;impulseX&lt;/code&gt; and &lt;code&gt;impulseY&lt;/code&gt; properties to make the reward "jump" out of the box.
+     * 
+     * You can specify the &lt;code&gt;collectorClass&lt;/code&gt; property to tell the object who can collect it. It is set to &lt;code&gt;Hero&lt;/code&gt; class by default.
+     * 
+     * Events:
+     * The &lt;code&gt;onCollect&lt;/code&gt; Signal is dispatched when the reward is collected. Since the RewardBox generates the reward, you probably won't
+     * get a reference to the reward. Thus, you can instead listen for RewardBox.onRewardCollect to find out when the reward is collected. Nevertheless,
+     * if you listen for Reward.OnCollect, it passes a reference to itself when it dispatches.
+     * 
+     * Animation:
+     * The reward object only has a default animation.
+     * 
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">Reward</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">PhysicsObject</span> 
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The speed at which the reward moves. It will turn around when it hits a wall.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">speed</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptASDoc">/**
+         * The speed on the x axis that the reward will fly out of the box.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">impulseX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * The speed on the y axis that the reward will fly out of the box.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">impulseY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> -10;
+        
+        <span class="ActionScriptASDoc">/**
+         * Dispatches when the reward gets collected. Also see RewardBox.onRewardCollect for a possibly more convenient event.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">onCollect</span>:<span class="ActionScriptDefault_Text">Signal</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_collectFixtureDef</span>:<span class="ActionScriptDefault_Text">b2FixtureDef</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_collectFixture</span>:<span class="ActionScriptDefault_Text">b2Fixture</span>;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_movingLeft</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_collectorClass</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Hero</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_isNew</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Reward</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">onCollect</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Signal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">Reward</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_fixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BEGIN_CONTACT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handlePlatformContact</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_collectFixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BEGIN_CONTACT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handleCollectContact</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">onCollect</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Specify the class of the object that you want the reward to be collected by.
+         * You can specify the collectorClass in String form (collectorClass = "com.myGame.MyHero") or via direct reference 
+         * (collectorClass = MyHero). You should use the String form when creating Rewards in an external level editor. Make sure and
+         * specify the entire classpath.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">collectorClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptOperator">*</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_collectorClass</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">collectorClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_collectorClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getDefinitionByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Class</span>;
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_collectorClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">timeDelta</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">timeDelta</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">velocity</span>:<span class="ActionScriptDefault_Text">V2</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetLinearVelocity</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_isNew</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_isNew</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+                <span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">impulseX</span>;
+                <span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">impulseY</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_movingLeft</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">speed</span>;
+                <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">speed</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SetLinearVelocity</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">velocity</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">defineBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">defineBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_bodyDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">fixedRotation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">defineFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">defineFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">friction</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">restitution</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">categoryBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Get</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Items"</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_fixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">maskBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAllExcept</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"GoodGuys"</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptString">"BadGuys"</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">b2FixtureDef</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">shape</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_shape</span>;
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">isSensor</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">categoryBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Get</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Items"</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filter</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">maskBits</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CollisionCategories</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetAllExcept</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"BadGuys"</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">createFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_fixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">m_reportBeginContact</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_fixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BEGIN_CONTACT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handlePlatformContact</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_collectFixture</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_body</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CreateFixture</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_collectFixtureDef</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_collectFixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">m_reportBeginContact</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_collectFixture</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addEventListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BEGIN_CONTACT</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">handleCollectContact</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">handleCollectContact</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">collider</span>:<span class="ActionScriptDefault_Text">PhysicsObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">other</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetBody</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">GetUserData</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">PhysicsObject</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">collider</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">_collectorClass</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                <span class="ActionScriptDefault_Text">onCollect</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">dispatch</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">handlePlatformContact</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span>:<span class="ActionScriptDefault_Text">ContactEvent</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">normal</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">collisionAngle</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MathVector</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">normal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">e</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">normal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">angle</span> <span class="ActionScriptOperator">*</span> 180 <span class="ActionScriptOperator">/</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">PI</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">collisionAngle</span> <span class="ActionScriptOperator">&lt;</span> 45 <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">collisionAngle</span> <span class="ActionScriptOperator">&gt;</span> 135<span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">_movingLeft</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">_movingLeft</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

@@ -1,0 +1,49 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>IPrioritySignal.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     *
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptinterface">interface</span> <span class="ActionScriptDefault_Text">IPrioritySignal</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">ISignal</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * Subscribes a listener for the signal.
+         * After you successfully register an event listener,
+         * you cannot change its priority through additional calls to add().
+         * To change a listener's priority, you must first call remove().
+         * Then you can register the listener again with the new priority level.
+         * @param    listener A function with an argument
+         * that matches the type of event dispatched by the signal.
+         * If eventClass is not specified, the listener and dispatch() can be called without an argument.
+         * @return a ISignalBinding, which contains the Function passed as the parameter
+         * @see ISignalBinding
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Subscribes a one-time listener for this signal.
+         * The signal will remove the listener automatically the first time it is called,
+         * after the dispatch to all listeners is complete.
+         * @param    listener A function with an argument
+         * that matches the type of event dispatched by the signal.
+         * If eventClass is not specified, the listener and dispatch() can be called without an argument.
+         * @param    priority The priority level of the event listener.
+         * The priority is designated by a signed 32-bit integer.
+         * The higher the number, the higher the priority.
+         * All listeners with priority n are processed before listeners of priority n-1.
+         * @return a ISignalBinding, which contains the Function passed as the parameter
+         * @see ISignalBinding
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addOnceWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">priority</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

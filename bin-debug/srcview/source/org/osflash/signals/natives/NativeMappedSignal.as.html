@@ -1,0 +1,268 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>NativeMappedSignal.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">natives</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">SignalBindingList</span>;
+
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IEventDispatcher</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getQualifiedClassName</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * &lt;p&gt;
+     * The NativeMappedSignal class is used to map/transform a native Event, 
+     * relayed from an IEventDispatcher, into other forms of data, 
+     * which are dispatched to all listeners.
+     * &lt;/p&gt;
+     * &lt;p&gt;This can be used to form a border where native flash Events do not cross.&lt;/p&gt;
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">NativeMappedSignal</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">NativeRelaySignal</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * @default is null, no mapping will occur 
+         */</span>        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_mappingFunction</span>:<span class="ActionScriptDefault_Text">Function</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+        
+        <span class="ActionScriptComment">/*open for extension but closed for modifications*/</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">mappingFunction</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Function</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_mappingFunction</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a new NativeMappedSignal instance to map/transform a native Event, 
+          * relayed from an IEventDispatcher, into other forms of data, 
+          * which are dispatched to all listeners.
+         * 
+         * @param    target    An object that implements the flash.events.IEventDispatcher interface.
+         * @param    eventType The event string name that would normally be passed to IEventDispatcher.addEventListener().
+         * @param     eventClass An optional class reference that enables an event type check in dispatch().
+         * @param    mappedTypes an optional list of types that enables the checking of the types mapped from an Event. 
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">NativeMappedSignal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventType</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventClass</span>:<span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptOperator">=</span><span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptOperator">...</span> <span class="ActionScriptDefault_Text">mappedTypes</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">valueClasses</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mappedTypes</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_eventClass</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">eventClass</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">_eventClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_valueClasses</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">slice</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : [];
+            
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">--</span>; <span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Invalid valueClasses argument: '</span> <span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptString">'item at index '</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">' should be a Class but was:&lt;'</span> <span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">'&gt;.'</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">getQualifiedClassName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Sets the mapping function or literal object list.
+         * If the argument is a list of object literals then this list is dispatched to listeners.
+         * 
+         * &lt;listing version="3.0"&gt;
+         *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo("ping")
+         *  signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+         * &lt;/listing&gt;
+         * 
+         * And an example passing a list of literals:
+         * 
+         * &lt;listing version="3.0"&gt;
+         *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo("ping", 3, 3.1415)
+         *  signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
+         * &lt;/listing&gt;
+         * 
+         * If the argument is a function then it is called when the event this NativeMappedSignal is listening for is dispatched.
+         * The function should return an Array or a single object. The data returned from the function is passed along as arguments in the Signal dispatch.
+         * Lets look at some examples of mapping functions and the function that is called back:
+         * 
+         * &lt;listing version="3.0"&gt;
+         *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo(function():void { 
+         *    return "ping"
+         *  })
+         *  signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+         * &lt;/listing&gt;
+         * 
+         * and here's an example using a list of arguments:
+         * 
+         * &lt;listing version="3.0"&gt;
+         *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo(function():void { 
+         *    return ["ping", 3, 3.1415] 
+         *  })
+         *     signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
+         * &lt;/listing&gt;
+         * 
+         * You can also state your wish to receive the native Event in th mapping function by simply including an argument of type Event:
+         * 
+         * &lt;listing version="3.0"&gt;
+         *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, Point).mapTo(function(event:MouseEvent):void { 
+         *    return new Point(event.localX, event.localY)
+         *  })
+         *  signal.add(function(arg:Point):void { trace(arg) }) // prints "(x=128, y=256)"
+         * &lt;/listing&gt; 
+         * 
+         * @param objectListOrFunction This can either be a list of object literals or a function that returns list of objects. 
+         * @return The NativeMappedSignal object this method was called on. This allows the Signal to be defined and mapped in one statement.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">mapTo</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">objectListOrFunction</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">NativeMappedSignal</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">objectListOrFunction</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 1 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">objectListOrFunction</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_mappingFunction</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">objectListOrFunction</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Function</span>;
+                
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_mappingFunction</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">&gt;</span> 1<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>    
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Mapping function has '</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_mappingFunction</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> 
+                        <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">' arguments but it needs zero or one of type Event'</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_mappingFunction</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">objectListOrFunction</span>; <span class="ActionScriptBracket/Brace">}</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+
+        <span class="ActionScriptASDoc">/**
+         * For usage without extension, instances of &lt;code&gt;NativeMappedSignal&lt;/code&gt; that are dispatching any values ( &lt;code&gt;valueClasses.length &gt; 0&lt;/code&gt; ),
+         * needs to be provided with a either a mapping function or a list of object literals.
+         * See &lt;code&gt;mapTo&lt;/code&gt; for more info.
+         * 
+         * Subclasses could override this one instead of letting the environment set the mapTo,
+         * MAKE SURE to also override &lt;code&gt;mapTo(...)&lt;/code&gt; if it should not be allowed.
+         *
+         * @parameter eventFromTarget the event that was dispatched from target.
+         * @return An object or Array of objects mapped from an Event. The mapping of Event to data will be performed by the mapping function
+         * if it is set. A list of object literals can also be supplied in place of the mapping function.
+         * If no mapping function or object literals are supplied then an empty Array is returned or
+         * if &lt;code&gt;valueClasses.length &gt; 0&lt;/code&gt; an ArgumentError is thrown.
+         *
+         * @see #mapTo()
+         */</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">mapEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventFromTarget</span>:<span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappingFunction</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappingFunction</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 1<span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptComment">//todo invariant
+</span>                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappingFunction</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventFromTarget</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">mappingFunction</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span> 
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptBracket/Brace">)</span> 
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">return</span> [];
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"There are valueClasses set to be dispatched &lt;"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">valueClasses</span> 
+                <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"&gt; but mappingFunction is null."</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>:<span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">//
+</span>            <span class="ActionScriptComment">//TODO: this is only required for backwards compatibility
+</span>            <span class="ActionScriptComment">//
+</span>            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">mappedData</span>: <span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mapEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">numValueClasses</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappedData</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">valueObjects</span>: <span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mappedData</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Array</span>;
+
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">valueObject</span>: <span class="ActionScriptDefault_Text">Object</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">valueClass</span>: <span class="ActionScriptDefault_Text">Class</span>;
+
+                <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">numValueClasses</span>; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">++</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span>;
+                    <span class="ActionScriptDefault_Text">valueClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span>;
+
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptOperator">===</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">valueClass</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">continue</span>;
+
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Value object &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">valueObject</span>
+                        <span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt; is not an instance of &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">valueClass</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt;.'</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueClasses</span> <span class="ActionScriptOperator">&gt;</span> 1<span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Expected more than one value.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappedData</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Mapping returned '</span><span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptDefault_Text">getQualifiedClassName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappedData</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">', expected '</span><span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">dispatchEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">onNativeEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span>: <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>: <span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">mappedData</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mapEvent</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">event</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptComment">// TODO: We could in theory just cache this array, so that we're not hitting the gc
+</span>            <span class="ActionScriptComment">// every time we call onNativeEvent 
+</span>            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">singleValue</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">mappedData</span><span class="ActionScriptBracket/Brace">]</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappedData</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 1 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptComment">//TODO invariant
+</span>                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">singleValue</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">bindingsToProcess</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">mappedDataArray</span>: <span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">mappedData</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">Array</span>;
+
+                    <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">mappedDataArray</span><span class="ActionScriptBracket/Brace">)</span>;
+                        <span class="ActionScriptDefault_Text">bindingsToProcess</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>                
+                <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">singleValue</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">bindingsToProcess</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

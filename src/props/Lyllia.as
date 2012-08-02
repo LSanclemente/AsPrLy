@@ -42,7 +42,8 @@ package props
 		/**
 		 * Retardo entre disparos
 		 */
-		public var delayDuration:Number = 1300;
+		[Property]
+		private var delayDuration:Number = 1300;
 		
 		//eventos
 				
@@ -57,7 +58,11 @@ package props
 		public var climbVelocity:Number = 5;
 		public var ladder:Sensor;
 		protected var _onLadder:Boolean = false;
+		
+		[Inspectable]
 		protected var _climbing:Boolean = false;
+		
+		[Property(value = "escaleraidle")]
 		protected var _climbAnimation:String = "escaleraidle";
 
 		protected var _combinedGroundAngle:Number = 0;

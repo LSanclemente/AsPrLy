@@ -1,0 +1,222 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SignalBindingList.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     * The SignalBindingList class represents an immutable list of SignalBinding objects.
+     *
+     * @author Joa Ebert
+     * @private
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">final</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SignalBindingList</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">NIL</span>: <span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Creates and returns a new SignalBindingList object.
+         *
+         * &lt;p&gt;A user never has to create a SignalBindingList manually. Use the &lt;code&gt;NIL&lt;/code&gt; element to represent an
+         * empty list. &lt;code&gt;NIL.prepend(value)&lt;/code&gt; would create a list containing &lt;code&gt;value&lt;/code&gt;.
+         *
+         * @param head The head of the list.
+         * @param tail The tail of the list.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">head</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">tail</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">head</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">tail</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">NIL</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span>
+                        <span class="ActionScriptString">'Parameters head and tail are null. Use the NIL element instead.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+                <span class="ActionScriptComment">//this is the NIL element per definition
+</span>                <span class="ActionScriptDefault_Text">nonEmpty</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">else</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">tail</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Tail must not be null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+                <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">head</span>;
+                <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">tail</span>;
+                <span class="ActionScriptDefault_Text">nonEmpty</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptComment">//
+</span>        <span class="ActionScriptComment">// Although those variables are not const, they would be if AS3 would handle it correct.
+</span>        <span class="ActionScriptComment">//
+</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">head</span>: <span class="ActionScriptDefault_Text">ISignalBinding</span>;
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">tail</span>: <span class="ActionScriptDefault_Text">SignalBindingList</span>;
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">nonEmpty</span>: <span class="ActionScriptDefault_Text">Boolean</span>;
+
+        <span class="ActionScriptASDoc">/**
+         * Whether or not the list is empty.
+         *
+         * &lt;code&gt;isEmpty&lt;/code&gt; is the same as &lt;code&gt;!nonEmpty&lt;/code&gt;. If performance is a criteria one should always
+         * use the &lt;code&gt;nonEmpty&lt;/code&gt; method. &lt;code&gt;isEmpty&lt;/code&gt; is only a wrapper for convinience.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">isEmpty</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * The length of the list.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> 0;
+
+            <span class="ActionScriptComment">//
+</span>            <span class="ActionScriptComment">// We could cache the length, but it would make methods like filterNot unnecessarily complicated.
+</span>            <span class="ActionScriptComment">// Instead we assume that O(n) is okay since the length property is used in rare cases.
+</span>            <span class="ActionScriptComment">// We could also cache the length lazy, but that is a waste of another 8b per list node (at least).
+</span>            <span class="ActionScriptComment">//
+</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">result</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">p</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptOperator">++</span><span class="ActionScriptDefault_Text">result</span>;
+                <span class="ActionScriptDefault_Text">p</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">result</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">prepend</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">SignalBinding</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">insertWithPriority</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>: <span class="ActionScriptDefault_Text">ISignalBinding</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">priority</span>: <span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">priority</span>;
+
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priority</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">p</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">q</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">first</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">last</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">priority</span> <span class="ActionScriptOperator">&gt;</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">priority</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">q</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptBracket/Brace">)</span>;
+
+                    <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">last</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">last</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">q</span>;
+
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">q</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">q</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">NIL</span><span class="ActionScriptBracket/Brace">)</span>;
+
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">last</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">last</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">q</span>;
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">first</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptDefault_Text">first</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">q</span>;
+
+                    <span class="ActionScriptDefault_Text">last</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">q</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+
+                <span class="ActionScriptDefault_Text">p</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">first</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">last</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Internal error.'</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptDefault_Text">last</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">NIL</span><span class="ActionScriptBracket/Brace">)</span>;
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">first</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">filterNot</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">listener</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">tail</span>;
+
+            <span class="ActionScriptComment">// The first item wasn't a match so the filtered list will contain it.
+</span>            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">first</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">NIL</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">current</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">previous</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">first</span>;
+            
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">current</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">current</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">listener</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptComment">// Splice out the current head.
+</span>                    <span class="ActionScriptDefault_Text">previous</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">current</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">first</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                
+                <span class="ActionScriptDefault_Text">previous</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">previous</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">current</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">NIL</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">current</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">current</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptComment">// The listener was not found so this list is unchanged.
+</span>            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">this</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">contains</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">false</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">p</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">listener</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+
+                <span class="ActionScriptDefault_Text">p</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">p</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">listener</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span>;
+
+                <span class="ActionScriptDefault_Text">p</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">toString</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">buffer</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">''</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">p</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">this</span>;
+
+            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">buffer</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" -&gt; "</span>;
+                <span class="ActionScriptDefault_Text">p</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">p</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptDefault_Text">buffer</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptString">"Nil"</span>;
+
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptString">"[List "</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">buffer</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">"]"</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

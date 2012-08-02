@@ -1,0 +1,111 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>BlittingArt.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">blittingview</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MathVector</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BitmapData</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Point</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Rectangle</span>;
+    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">BlittingArt</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The animation that is currently playing for this character
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">currAnimation</span>:<span class="ActionScriptDefault_Text">AnimationSequence</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Values can be "center" or "topLeft". Specifies the registration point for your art. Often, static images such as backgrounds
+         * are easier to place with "topLeft" registration, while physics objects are commonly represented with "center" registration.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">registration</span>:<span class="ActionScriptDefault_Text">String</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptString">"center"</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The x and y offset distance that the art will sit from the registration.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">offset</span>:<span class="ActionScriptDefault_Text">MathVector</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MathVector</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * A list of AnimationSequence objects associated with this character. Use addAnimation() to add a sequence to this array.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">sequences</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+        
+        <span class="ActionScriptASDoc">/**
+         * The visual layering value. Lower numbers appear below higher numbers. The Citrus Engine sets this in BlittingView.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">group</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * Stores the rank in the graphics' add-order. This is used as a second sorting parameter if the group param is equal for two objects.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">addIndex</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * The CitrusObject associated with this art object.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * This is the graphical representation of your CitrusObject when using the Blitting view. a BlittingArt object
+         * should contain one or more AnimationSequences. If your object is does not need to animate (such as a background),
+         * you can simply pass in a class that creates your graphic. The class that you pass in must create a BitmapData object.
+         * @param    defaultGraphic For objects without aimation, you can pass in a single BitmapData class. Useful for creating
+         * backgrounds.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">BlittingArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">defaultGraphic</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">defaultGraphic</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">addAnimation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">AnimationSequence</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">defaultGraphic</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">initialize</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">citrusObject</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Called by the CitrusEngine to play a particular animation.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">play</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">animationName</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">newAnimation</span>:<span class="ActionScriptDefault_Text">AnimationSequence</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getAnimationByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">animationName</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">newAnimation</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">newAnimation</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">currAnimation</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptDefault_Text">currAnimation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">newAnimation</span>;
+            <span class="ActionScriptDefault_Text">currAnimation</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">currFrame</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Call this to add a new animation sequence to this BlittingArt object.
+         * @param    animationSequence An animation sequence that your character will use.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addAnimation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">animationSequence</span>:<span class="ActionScriptDefault_Text">AnimationSequence</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">sequences</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">animationSequence</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">currAnimation</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">currAnimation</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">animationSequence</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Returns an animation sequence object that has the name that you provided.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getAnimationByName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">AnimationSequence</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">sequence</span>:<span class="ActionScriptDefault_Text">AnimationSequence</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">sequences</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sequence</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">name</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">sequence</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

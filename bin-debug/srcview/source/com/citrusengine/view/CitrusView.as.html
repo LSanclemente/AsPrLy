@@ -1,0 +1,230 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>CitrusView.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusEngine</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">MathVector</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">LoadManager</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Sprite</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">geom</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Rectangle</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * This is an abstract class that is extended by any view managers, such as the SpriteView. It provides default properties
+     * and functionality that all game views need, such as camera controls, parallaxing, and graphics object displaying and management.
+     * 
+     * &lt;p&gt;This is the class by which you will grab a reference to the graphical representations of your Citrus Objects,
+     * which will be useful if you need to add mouse event handlers to them, or add graphics effects and filter.&lt;/p&gt;
+     * 
+     * &lt;p&gt;The CitrusView was meant to be extended to support multiple rendering methods, such as blitting, or even 3D. The goal 
+     * is to provide as much decoupling as possible of the data/logic from the view. In the near future, it is our goal to
+     * provide multiple rendering methods such as blitting right out of the box, so that the developer can choose which method
+     * they would like to work with.&lt;/p&gt; 
+     */</span>    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">CitrusView</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * This is the manager object that keeps track of the asynchronous load progress of all graphics objects that are loading.
+         * You will want to use the load manager's bytesLoaded and bytesTotal properties to monitor when your state's graphics are
+         * completely loaded and ready for revealing.
+         * 
+         * &lt;p&gt;Normally, you will want to hide your state from the player's view until the load manager dispatches its onComplete event,
+         * notifying you that all graphics have been loaded. This is the object that you will want to reference in your loading screens.
+         * &lt;/p&gt; 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">loadManager</span>:<span class="ActionScriptDefault_Text">LoadManager</span>;
+        
+        <span class="ActionScriptComment">//Camera properties
+</span>        <span class="ActionScriptASDoc">/**
+         * The thing that the camera will follow. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraTarget</span>:<span class="ActionScriptDefault_Text">Object</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The distance from the top-left corner of the screen that the camera should offset the target. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraOffset</span>:<span class="ActionScriptDefault_Text">MathVector</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MathVector</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * A value between 0 and 1 that specifies the speed at which the camera catches up to the target.
+         * 0 makes the camera not follow the target at all and 1 makes the camera follow the target exactly. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraEasing</span>:<span class="ActionScriptDefault_Text">MathVector</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">MathVector</span><span class="ActionScriptBracket/Brace">(</span>0.25<span class="ActionScriptOperator">,</span> 0.05<span class="ActionScriptBracket/Brace">)</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * A rectangle specifying the minimum and maximum area that the camera is allowed to follow the target in. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraBounds</span>:<span class="ActionScriptDefault_Text">Rectangle</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The width of the visible game screen. This will usually be the same as your stage width unless your game has a border.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraLensWidth</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The height of the visible game screen. This will usually be the same as your stage width unless your game has a border.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">cameraLensHeight</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_viewObjects</span>:<span class="ActionScriptDefault_Text">Dictionary</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Dictionary</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_root</span>:<span class="ActionScriptDefault_Text">Sprite</span>;
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_viewInterface</span>:<span class="ActionScriptDefault_Text">Class</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * There is one CitrusView per state, so when a new state is initialized, it creates the view instance.
+         * You can override which type of CitrusView you would like to create via the State.createView() protected method.
+         * At the time of this writing, only the SpriteView is available, but in the future, blitting is expected to be supported.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">CitrusView</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">root</span>:<span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">viewInterface</span>:<span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_root</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">root</span>;
+            <span class="ActionScriptDefault_Text">_viewInterface</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">viewInterface</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">ce</span>:<span class="ActionScriptDefault_Text">CitrusEngine</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CitrusEngine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">cameraLensWidth</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stageWidth</span>;
+            <span class="ActionScriptDefault_Text">cameraLensHeight</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stage</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">stageHeight</span>;
+            
+            <span class="ActionScriptDefault_Text">loadManager</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">LoadManager</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">loadManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This should be implemented by a CitrusView subclass. The update method's job is to iterate through all the CitrusObjects,
+         * and update their graphical counterparts on every frame. See the SpriteView's implementation of the update() method for
+         * specifics. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * The active state automatically calls this method whenever a new CitrusObject is added to it. It uses the CitrusObject
+         * to create the appropriate graphical representation. It also tells the LoadManager to begin listening to Loader events
+         * on the graphics object.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">_viewInterface</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">art</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">createArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">art</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">art</span>;
+            
+            <span class="ActionScriptComment">//Recurses through the art to see if it can find a loader to monitor
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">loadManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">onLoadComplete</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">numListeners</span> <span class="ActionScriptOperator">&gt;</span> 0<span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptComment">//only do this if someone is listening
+</span>                <span class="ActionScriptDefault_Text">loadManager</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">art</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This is called by the active state whenever a CitrusObject is removed from the state, effectively also removing the
+         * art representation. 
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">_viewInterface</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptReserved">return</span>;
+            
+            <span class="ActionScriptDefault_Text">destroyArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">delete</span> <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Gets the graphical representation of a CitrusObject that is being managed by the active state's view.
+         * This is the method that you will want to call to get the art for a CitrusObject.
+         * 
+         * &lt;p&gt;For instance, if you want to perform an action when the user clicks an object, you will want to call
+         * this method to get the MovieClip that is associated with the CitrusObject that you are listening for a click upon.
+         * &lt;/p&gt;
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">_viewInterface</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Error</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"The object "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">" does not have a graphical counterpart because it does not implement "</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_viewInterface</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"."</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">return</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">]</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Gets a reference to the CitrusObject associated with the provided art object.
+         * This is useful for instances such as when you need to get the CitrusObject for a graphic that got clicked on or otherwise interacted with.
+         * @param    art The graphical object that represents the CitrusObject you want.
+         * @return The CitrusObject associated with the provided art object.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getObjectFromArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">art</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">object</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">object</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">art</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">object</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * This is a non-critical helper function that allows you to quickly set all the available camera properties in one place. 
+         * @param target The thing that the camera should follow.
+         * @param offset The distance from the upper-left corner that you want the camera to be offset from the target.
+         * @param bounds The rectangular bounds that the camera should not extend beyond.
+         * @param easing The x and y percentage of distance that the camera will travel toward the target per tick. Lower numbers are slower. The number should not go beyond 1.
+         */</span>        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">setupCamera</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">offset</span>:<span class="ActionScriptDefault_Text">MathVector</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">bounds</span>:<span class="ActionScriptDefault_Text">Rectangle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">easing</span>:<span class="ActionScriptDefault_Text">MathVector</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">cameraTarget</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">target</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">offset</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">cameraOffset</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">offset</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bounds</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">cameraBounds</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bounds</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">easing</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">cameraEasing</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">easing</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * A CitrusView subclass will extend this method to provide specifics on how to create the graphical representation of a CitrusObject.
+         * @param object The object for which to create the art.
+         * @return The art object.
+         * 
+         */</span>        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * A CitrusView subclass will extend this method to update the graphical representation for each CitrusObject.
+         * @param object A CitrusObject whose graphical counterpart needs to be updated.
+         * @param art The graphics object that will be updated based on the provided CitrusObject.
+         */</span>        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">art</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * A CitrusView subclass will extend this method to destroy the art associated with the provided CitrusObject. 
+         */</span>        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroyArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

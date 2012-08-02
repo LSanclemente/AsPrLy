@@ -1,0 +1,295 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Emitter.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">objects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">common</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusEngine</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">core</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusObject</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BlittingArt</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">BlittingView</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * An emitter creates particles at a specified rate with specified distribution properties. You can set the emitter's x and y
+     * location at any time as well as change the graphic of the particles that the emitter makes.
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">Emitter</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">CitrusObject</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The X position where the particles will emit from.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">x</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * The Y position where the particles will emit from.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">y</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * In milliseconds, how often the emitter will release new particles.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitFrequency</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 300;
+        
+        <span class="ActionScriptASDoc">/**
+         * The number of particles that the emitter will release during each emission.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitAmount</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptASDoc">/**
+         * In milliseconds, how long the particles will last before being recycled.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particleLifeSpan</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 3000;
+        
+        <span class="ActionScriptASDoc">/**
+         * The X force applied to particle velocity, in pixels per frame.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">gravityX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * The Y force applied to particle velocity, in pixels per frame.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">gravityY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * A number between 0 and 1 to create air resistence. Lower numbers create slow floatiness like a feather.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dampingX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptASDoc">/**
+         * A number between 0 and 1 to create air resistence. Lower numbers create slow floatiness like a feather.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">dampingY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 1;
+        
+        <span class="ActionScriptASDoc">/**
+         * The minimum initial impulse velocity that a particle can have via the randomly generated impulse on the X axis.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">minImpulseX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> -10;
+        
+        <span class="ActionScriptASDoc">/**
+         * The maximum initial impulse velocity that a particle can have via the randomly generated impulse on the X axis.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">maxImpulseX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 10;
+        
+        <span class="ActionScriptASDoc">/**
+         * The minimum initial impulse velocity that a particle can have via the randomly generated impulse on the Y axis.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">minImpulseY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> -10;
+        
+        <span class="ActionScriptASDoc">/**
+         * The maximum initial impulse velocity that a particle can have via the randomly generated impulse on the Y axis.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">maxImpulseY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 10;
+        
+        <span class="ActionScriptASDoc">/**
+         * In miliseconds, how long the emitter lasts before destroying itself. If the value is -1, it lasts forever.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitterLifeSpan</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> -1;
+        
+        <span class="ActionScriptASDoc">/**
+         * The width deviation from the x position that a particle can be created via a randomly generated number.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitAreaWidth</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptASDoc">/**
+         * The height deviation from the y position that a particle can be created via a randomly generated number.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitAreaHeight</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_particles</span>:<span class="ActionScriptDefault_Text">Vector</span><span class="ActionScriptBracket/Brace">.&lt;</span><span class="ActionScriptDefault_Text">EmitterParticle</span><span class="ActionScriptBracket/Brace">&gt;</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Vector</span><span class="ActionScriptBracket/Brace">.&lt;</span><span class="ActionScriptDefault_Text">EmitterParticle</span><span class="ActionScriptBracket/Brace">&gt;</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_recycle</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_graphic</span>:<span class="ActionScriptOperator">*</span>;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_particlesCreated</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_lastEmission</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_birthTime</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> -1;
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_ce</span>:<span class="ActionScriptDefault_Text">CitrusEngine</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Makes a particle emitter. 
+         * @param    name The name of the emitter.
+         * @param    graphic The graphic class to use to create each particle.
+         * @param    x The X position where the particles will emit from.
+         * @param    y The Y position where the particles will emit from.
+         * @param    emitFrequency In milliseconds, how often the emitter will release new particles.
+         * @param    emitAmount The number of particles that the emitter will release during each emission.
+         * @param    particleLifeSpan In milliseconds, how long the particles will last before being recycled.
+         * @param    gravityX The X force applied to particle velocity, in pixels per frame.
+         * @param    gravityY The Y force applied to particle velocity, in pixels per frame.
+         * @param    dampingX A number between 0 and 1 to create air resistence. Lower numbers create slow floatiness like a feather.
+         * @param    dampingY A number between 0 and 1 to create air resistence. Lower numbers create slow floatiness like a feather.
+         * @param    minImpulseX The minimum initial impulse velocity that a particle can have via the randomly generated impulse on the X axis.
+         * @param    maxImpulseX The maximum initial impulse velocity that a particle can have via the randomly generated impulse on the X axis.
+         * @param    minImpulseY The minimum initial impulse velocity that a particle can have via the randomly generated impulse on the Y axis.
+         * @param    maxImpulseY The maximum initial impulse velocity that a particle can have via the randomly generated impulse on the Y axis.
+         * @param    emitterLifeSpan In miliseconds, how long the emitter lasts before destroying itself. If the value is -1, it lasts forever.
+         * @param    emitAreaWidth The width deviation from the x position that a particle can be created via a randomly generated number.
+         * @param    emitAreaHeight The height deviation from the y position that a particle can be created via a randomly generated number.
+         * @return An emitter.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptReserved">static</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Make</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">graphic</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">x</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">y</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">emitFrequency</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">emitAmount</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">particleLifeSpan</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">gravityX</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">gravityY</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">dampingX</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">dampingY</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">minImpulseX</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">maxImpulseX</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">minImpulseY</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">maxImpulseY</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">emitterLifeSpan</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> -1<span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">emitAreaWidth</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptOperator">,</span>
+                                    <span class="ActionScriptDefault_Text">emitAreaHeight</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> 0<span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Emitter</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Emitter</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span>     <span class="ActionScriptDefault_Text">graphic</span>: <span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">x</span>: <span class="ActionScriptDefault_Text">x</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">y</span>: <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">emitFrequency</span>: <span class="ActionScriptDefault_Text">emitFrequency</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">emitAmount</span>: <span class="ActionScriptDefault_Text">emitAmount</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">particleLifeSpan</span>: <span class="ActionScriptDefault_Text">particleLifeSpan</span><span class="ActionScriptOperator">,</span>
+                                        <span class="ActionScriptDefault_Text">gravityX</span>: <span class="ActionScriptDefault_Text">gravityX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">gravityY</span>: <span class="ActionScriptDefault_Text">gravityY</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">dampingX</span>: <span class="ActionScriptDefault_Text">dampingX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">dampingY</span>: <span class="ActionScriptDefault_Text">dampingY</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">minImpulseX</span>: <span class="ActionScriptDefault_Text">minImpulseX</span><span class="ActionScriptOperator">,</span>
+                                        <span class="ActionScriptDefault_Text">maxImpulseX</span>: <span class="ActionScriptDefault_Text">maxImpulseX</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">minImpulseY</span>: <span class="ActionScriptDefault_Text">minImpulseY</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">maxImpulseY</span>: <span class="ActionScriptDefault_Text">maxImpulseY</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">emitterLifeSpan</span>: <span class="ActionScriptDefault_Text">emitterLifeSpan</span><span class="ActionScriptOperator">,</span>
+                                        <span class="ActionScriptDefault_Text">emitAreaWidth</span>: <span class="ActionScriptDefault_Text">emitAreaWidth</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">emitAreaHeight</span>: <span class="ActionScriptDefault_Text">emitAreaHeight</span><span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Emitter</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span>:<span class="ActionScriptDefault_Text">Object</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">params</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">_ce</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">CitrusEngine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getInstance</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particle</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+            
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particle</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+            
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">destroy</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * The graphic that will be generated for each particle. This works just like the CitrusObject's view property.
+         * The value can be 1) The path to an external image, 2) A DisplayObject class (not an instance) in String notation
+         * (view: "com.graphics.myParticle") or 3) A DisplayObject class (not an instance) in Object notation
+         * (view: MyParticle). See the documentation for ISpriteView.view for more info.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptOperator">*</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_graphic</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptOperator">*</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">_graphic</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>;
+            <span class="ActionScriptDefault_Text">destroyRecycle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>; <span class="ActionScriptComment">//clear the reusable ones, they all have to be remade
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">timeDelta</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">timeDelta</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">now</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Date</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">time</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particle</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">emitterExpired</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">emitterLifeSpan</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">_birthTime</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptOperator">-</span>1 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">_birthTime</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">emitterLifeSpan</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">now</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//check to see if any particles should be destroyed
+</span>            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">-</span> 1; <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">&gt;=</span> 0; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">--</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span>;
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">birthTime</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">particleLifeSpan</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">now</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">canRecycle</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+                        <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptReserved">else</span>
+                    <span class="ActionScriptBracket/Brace">{</span>
+                        <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+                    <span class="ActionScriptBracket/Brace">}</span>
+                    <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">splice</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">indexOf</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">,</span> 1<span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//generate more particles if necessary
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">emitterExpired</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">now</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">_lastEmission</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">emitFrequency</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">_lastEmission</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">now</span>;
+                
+                <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">emitAmount</span>; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">++</span> <span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">getOrCreateParticle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">now</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                
+                <span class="ActionScriptComment">//Set the emitter's birth time if this is the first emission.
+</span>                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_birthTime</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptOperator">-</span>1<span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">_birthTime</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">now</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//update positions on existing particles.
+</span>            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityX</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">gravityX</span>;
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityY</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">gravityY</span>;
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityX</span> <span class="ActionScriptOperator">*=</span> <span class="ActionScriptDefault_Text">dampingX</span>;
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityY</span> <span class="ActionScriptOperator">*=</span> <span class="ActionScriptDefault_Text">dampingY</span>;
+                
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityX</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">timeDelta</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityY</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">timeDelta</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//should we destroy the emitter?
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">emitterExpired</span> <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 0<span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getOrCreateParticle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">birthTime</span>:<span class="ActionScriptDefault_Text">Number</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particle</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">pop</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">state</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">BlittingView</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">EmitterParticle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"_"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_particlesCreated</span><span class="ActionScriptOperator">++</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span><span class="ActionScriptDefault_Text">view</span>: <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">BlittingArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">graphic</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">}</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                <span class="ActionScriptReserved">else</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">EmitterParticle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">name</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">"_"</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">_particlesCreated</span><span class="ActionScriptOperator">++</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">view</span>: <span class="ActionScriptDefault_Text">graphic</span> <span class="ActionScriptBracket/Brace">}</span> <span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+                
+                <span class="ActionScriptDefault_Text">_ce</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">state</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">push</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">random</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">emitAreaWidth</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">emitAreaWidth</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">random</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">emitAreaHeight</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">emitAreaHeight</span> <span class="ActionScriptOperator">/</span> 2<span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityX</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">random</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">maxImpulseX</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">minImpulseX</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">minImpulseX</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">velocityY</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">Math</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">random</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">maxImpulseY</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">minImpulseY</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">minImpulseY</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">birthTime</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">birthTime</span>;
+            <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">visible</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">particle</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroyRecycle</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">particle</span>:<span class="ActionScriptDefault_Text">EmitterParticle</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">kill</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+            <span class="ActionScriptDefault_Text">_recycle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">=</span> 0;
+            
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">particle</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_particles</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">particle</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">canRecycle</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

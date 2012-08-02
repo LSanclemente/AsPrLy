@@ -1,0 +1,120 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>SpriteView.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">spriteview</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">CitrusView</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">ISpriteView</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">display</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Sprite</span>;
+    
+    <span class="ActionScriptASDoc">/**
+     * SpriteView is the first official implementation of a Citrus Engine "view". It creates and manages graphics using the traditional
+     * Flash display list (addChild(), removeChild()) using DisplayObjects (MovieClips, Bitmaps, etc).
+     * 
+     * &lt;p&gt;You might think, "Is there any other way to display graphics in Flash?", and the answer is yes. Many Flash game programmers
+     * prefer to use other rendering methods. The most common alternative is called "blitting", which is what Flixel uses. There are
+     * also 3D games on the way that will use Adobe Stage3D to render graphics.&lt;/p&gt;
+     */</span>    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">SpriteView</span> <span class="ActionScriptReserved">extends</span> <span class="ActionScriptDefault_Text">CitrusView</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_viewRoot</span>:<span class="ActionScriptDefault_Text">Sprite</span>;
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">SpriteView</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">root</span>:<span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">root</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">ISpriteView</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">_viewRoot</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptDefault_Text">root</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">viewRoot</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Sprite</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_viewRoot</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inherit 
+         */</span>        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">super</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//Update Camera
+</span>            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">cameraTarget</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">diffX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraTarget</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraOffset</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">diffY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraTarget</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraOffset</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">-</span> <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">velocityX</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">diffX</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">cameraEasing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span>;
+                <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">velocityY</span>:<span class="ActionScriptDefault_Text">Number</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">diffY</span> <span class="ActionScriptOperator">*</span> <span class="ActionScriptDefault_Text">cameraEasing</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span>;
+                <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">velocityX</span>;
+                <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">velocityY</span>;
+                
+                <span class="ActionScriptComment">//Constrain to camera bounds
+</span>                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">left</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">width</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">cameraLensWidth</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">left</span>;
+                    <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraLensWidth</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">right</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">x</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">right</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraLensWidth</span>;
+                    
+                    <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">&lt;=</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">top</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">height</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">cameraLensHeight</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">top</span>;
+                    <span class="ActionScriptReserved">else</span> <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraLensHeight</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">bottom</span><span class="ActionScriptBracket/Brace">)</span>
+                        <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">y</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptOperator">-</span><span class="ActionScriptDefault_Text">cameraBounds</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">bottom</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">cameraLensHeight</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptComment">//Update art positions
+</span>            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">sprite</span>:<span class="ActionScriptDefault_Text">SpriteArt</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">group</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">)</span>
+                    <span class="ActionScriptDefault_Text">updateGroupForSprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptBracket/Brace">)</span>;
+                
+                <span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inherit 
+         */</span>        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">createArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Object</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">viewObject</span>:<span class="ActionScriptDefault_Text">ISpriteView</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">citrusObject</span> <span class="ActionScriptReserved">as</span> <span class="ActionScriptDefault_Text">ISpriteView</span>;
+            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">art</span>:<span class="ActionScriptDefault_Text">SpriteArt</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SpriteArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">viewObject</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//Perform an initial update
+</span>            <span class="ActionScriptDefault_Text">art</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">update</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptDefault_Text">updateGroupForSprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">art</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">art</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inherit 
+         */</span>        
+        <span class="ActionScriptReserved">override</span> <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">destroyArt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">citrusObject</span>:<span class="ActionScriptDefault_Text">Object</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">spriteArt</span>:<span class="ActionScriptDefault_Text">SpriteArt</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_viewObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">citrusObject</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptDefault_Text">spriteArt</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">parent</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">spriteArt</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">private</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">updateGroupForSprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span>:<span class="ActionScriptDefault_Text">SpriteArt</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">//Create the container sprite (group) if it has not been created yet.
+</span>            <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">group</span> <span class="ActionScriptOperator">&gt;=</span> <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">numChildren</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptComment">//Add the sprite to the appropriate group
+</span>            <span class="ActionScriptDefault_Text">Sprite</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_viewRoot</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getChildAt</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">addChild</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">sprite</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

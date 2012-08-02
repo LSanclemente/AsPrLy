@@ -1,0 +1,124 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>ISpriteView.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">com</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">citrusengine</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">view</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptASDoc">/**
+     * The ISpriteView interface provides a common interface between a CitrusObject and the SpriteView view manager.
+     * All objects that need to have graphical representations on screen need to implement this, if your
+     * objects are in a state that uses the CitrusView as its view (most common). Often, especially
+     * when working with Box2D, game object units will be different than than view object units.
+     * In Box2D, units are in meters, but graphics are rendered in pixels.
+     * Citrus Engine does not put a requirement on whether the game logic or the view manager should
+     * perform the conversion. 
+     * If you desire the game logic to perform the unit conversion, the values should be multiplied by
+     * [commonly] 30 before being returned in order to convert the meter values to pixel values.
+     */</span>    
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptinterface">interface</span> <span class="ActionScriptDefault_Text">ISpriteView</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptASDoc">/**
+         * The x position of the object. 
+         */</span>    
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">x</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The y position of the object. 
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">y</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The ratio at which the object scrolls in relation to the camera.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">parallax</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The rotation value of the object.
+         * &lt;p&gt;Commonly, flash uses degrees to display art rotation, but game logic is usually in radians.
+         * If a conversion is necessary and you choose the game object to perform the conversion rather than
+         * the view manager, then you will want to perform your conversion here.&lt;/p&gt;
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">rotation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The group property specifies the depth sorting. Objects placed in group 1 will be behind objects placed in group 2.
+         * Note that groups and parallax are unrelated, so be careful not to have an object have a lower parallax value than an object 
+         * in a group below it.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">group</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The visibility of the object. 
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">visible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * This is where you specify what your graphical representation of your CitrusObject will be.
+         * 
+         * &lt;p&gt;You can specify your &lt;code&gt;view&lt;/code&gt; value in multiple ways:&lt;/p&gt;
+         * 
+         * &lt;p&gt;If you want your graphic to be a SWF, PNG, or JPG that
+         * is loaded at runtime, then assign &lt;code&gt;view&lt;/code&gt; a String URL relative to your game's SWF, just like you would
+         * if you were loading any file in Flash. (graphic = "graphics/Hero.swf")
+         * 
+         * &lt;p&gt;If your graphic is embeddeded into the SWF, you can assign the &lt;code&gt;view&lt;/code&gt; property in two ways: Either by package string
+         * notation (view = "com.myGame.MyHero"), or by using a direct class reference (graphic = MyHero). The first method, String notation, is useful
+         * when you are using a level editor such as the Flash IDE or GLEED2D because all data must come through in String form. However, if you
+         * are hardcoding your graphic class, you can simply pass a direct reference to the class.
+         * Whichever way you specify your class, your class must be (on some level) a &lt;code&gt;DisplayObject&lt;/code&gt;.&lt;/p&gt;
+         * 
+         * &lt;p&gt;Also note that you CANNOT assign the &lt;code&gt;view&lt;/code&gt; property to a display object that you made. You must specify either an 
+         * external URL or a Class.
+         * 
+         * &lt;p&gt;If you are using a level editor and using the ObjectMaker to batch-create your
+         * CitrusObjects, you will need to specify the entire classpath in string form and let the factory turn your string
+         * into an actual class. Also, the class definition (MyHeroGraphic, for example) will need to be compiled into your code
+         * somewhere, otherwise the game will not be able to get the class definition from a String.&lt;/p&gt;
+         * 
+         * &lt;p&gt;If your graphic is an external file such as a PNG, JPG, or SWF, you can provide the path to the file (either an absolute path,
+         * or a relative path from your HTML file or SWF). The SpriteView will detect that it is an external file and
+         * load the file using the ExternalArt class.&lt;/p&gt;
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">view</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptOperator">*</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * A string representing the current animation state that your object is in, such as "run", "jump", "attack", etc.
+         * The SpriteView checks this property every frame and, if your graphic is a SWF, attemps to "gotoAndPlay()" to a
+         * label with the name of the &lt;code&gt;animation&lt;/code&gt; property.
+         * 
+         * If you want your graphic to not loop, you should call stop() on the last frame of your animation from within your SWF file.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">animation</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * If true, the view will invert your graphic. This is common in side-scrolling games so that you don't have to draw
+         * right-facing and left-facing versions of all your graphics. If you are using the inverted property to invert your
+         * graphics, make sure you set your registration to "center" or the graphic will flip like a page turning instead of a card
+         * flipping. 
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">inverted</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The x offset from the graphic's registration point.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">offsetX</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * The y offset from the graphic's registration point.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">offsetY</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Number</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Specify either "topLeft" or "center" to position your graphic's registration. Please note that this is
+         * only useful for graphics that are loaded dynamically at runtime (PNGs, SWFs, and JPGs). If you are embedding
+         * your art, you should handle the registration in your embedded class.
+         */</span>
+        <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">registration</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">String</span>;
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span></pre></body>
+</html>

@@ -1,0 +1,119 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>NativeSignalSet.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">natives</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">sets</span> 
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">natives</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">INativeDispatcher</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">natives</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NativeSignal</span>;
+
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Event</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">events</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IEventDispatcher</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">Dictionary</span>;
+
+    <span class="ActionScriptASDoc">/**
+     * A convenient way to access a logical set of signals.
+     * 
+     * @author Jon Adams
+     * 
+     * @example SignalSets allow you to get predefined signals for many built in events
+     * &lt;listing version="3.0" &gt;
+        package {
+            import org.osflash.signals.natives.sets.InteractiveObjectSignalSet;
+        
+            import flash.display.Sprite;
+            import flash.events.Event;
+        
+            public class Example extends Sprite {
+        
+                private var button:Sprite;
+                private var buttonSignals:InteractiveObjectSignalSet;
+        
+                public function Main() {
+                    button = new Sprite();
+                    button.graphics.beginFill(0xff0000);
+                    button.graphics.drawRect(0, 0, 100, 100);
+                    button.graphics.endFill();
+                    
+                    buttonSignals = new InteractiveObjectSignalSet(button);
+                    buttonSignals.click.add(handler);
+                    buttonSignals.addedToStage.add(handler);
+                    buttonSignals.enterFrame.addOnce(handler);
+                    
+                    addChild(button);
+                }
+        
+                private function handler(event:Event):void {
+                    trace(event.target, "fired", event.type);
+                }
+            }
+        }
+     * &lt;/listing&gt;
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">NativeSignalSet</span> 
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">target</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">_signals</span>:<span class="ActionScriptDefault_Text">Dictionary</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">Dictionary</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">NativeSignalSet</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span>:<span class="ActionScriptDefault_Text">IEventDispatcher</span><span class="ActionScriptBracket/Brace">)</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">target</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">target</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * Lazily instantiates a NativeSignal
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">getNativeSignal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">eventType</span>:<span class="ActionScriptDefault_Text">String</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventClass</span>:<span class="ActionScriptDefault_Text">Class</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">null</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">NativeSignal</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">==</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'eventType must not be null.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_signals</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">||=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">NativeSignal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">target</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">eventClass</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">Event</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptASDoc">/**
+         * The current number of listeners for the signal.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">numListeners</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">int</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">count</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0;
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">signal</span>:<span class="ActionScriptDefault_Text">INativeDispatcher</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_signals</span><span class="ActionScriptBracket/Brace">)</span> 
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">count</span> <span class="ActionScriptOperator">+=</span> <span class="ActionScriptDefault_Text">signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">numListeners</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">count</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * The signals in the SignalSet as an Array.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">signals</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">result</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptOperator">=</span> [];
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">signal</span>:<span class="ActionScriptDefault_Text">INativeDispatcher</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_signals</span><span class="ActionScriptBracket/Brace">)</span> 
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">result</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">result</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">signal</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">result</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * Unsubscribes all listeners from all signals in the set.
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> 
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">for each</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">signal</span>:<span class="ActionScriptDefault_Text">INativeDispatcher</span> <span class="ActionScriptReserved">in</span> <span class="ActionScriptDefault_Text">_signals</span><span class="ActionScriptBracket/Brace">)</span> 
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">delete</span> <span class="ActionScriptDefault_Text">_signals</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">signal</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">eventType</span><span class="ActionScriptBracket/Brace">]</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>

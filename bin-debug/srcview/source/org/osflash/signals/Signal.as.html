@@ -1,0 +1,190 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Signal.as</title>
+<link rel="stylesheet" type="text/css" href="../../../../SourceStyles.css"/>
+</head>
+
+<body><pre><span class="ActionScriptpackage">package</span> <span class="ActionScriptDefault_Text">org</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">osflash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">signals</span>
+<span class="ActionScriptBracket/Brace">{</span>
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">errors</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">IllegalOperationError</span>;
+    <span class="ActionScriptReserved">import</span> <span class="ActionScriptDefault_Text">flash</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">utils</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">getQualifiedClassName</span>;
+
+    <span class="ActionScriptASDoc">/** 
+     * Allows the valueClasses to be set in MXML, e.g.
+     * &lt;signals:Signal id="nameChanged"&gt;{[String, uint]}&lt;/signals:Signal&gt;
+     */</span>
+    <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">DefaultProperty</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"valueClasses"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>    
+    
+    <span class="ActionScriptASDoc">/**
+     * Signal dispatches events to multiple listeners.
+     * It is inspired by C# events and delegates, and by
+     * &lt;a target="_top" href="http://en.wikipedia.org/wiki/Signals_and_slots"&gt;signals and slots&lt;/a&gt;
+     * in Qt.
+     * A Signal adds event dispatching functionality through composition and interfaces,
+     * rather than inheriting from a dispatcher.
+     * &lt;br/&gt;&lt;br/&gt;
+     * Project home: &lt;a target="_top" href="http://github.com/robertpenner/as3-signals/"&gt;http://github.com/robertpenner/as3-signals/&lt;/a&gt;
+     */</span>
+    <span class="ActionScriptReserved">public</span> <span class="ActionScriptclass">class</span> <span class="ActionScriptDefault_Text">Signal</span> <span class="ActionScriptReserved">implements</span> <span class="ActionScriptDefault_Text">ISignal</span>
+    <span class="ActionScriptBracket/Brace">{</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_valueClasses</span>:<span class="ActionScriptDefault_Text">Array</span>;        <span class="ActionScriptComment">// of Class
+</span>
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">_strict</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">true</span>;
+        
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bindings</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span>;
+        
+        <span class="ActionScriptASDoc">/**
+         * Creates a Signal instance to dispatch value objects.
+         * @param    valueClasses Any number of class references that enable type checks in dispatch().
+         * For example, new Signal(String, uint)
+         * would allow: signal.dispatch("the Answer", 42)
+         * but not: signal.dispatch(true, 42.5)
+         * nor: signal.dispatch()
+         *
+         * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+         * but this constructor has logic to support super(valueClasses).
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">Signal</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">)</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NIL</span>;
+
+            <span class="ActionScriptComment">// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+</span>            <span class="ActionScriptReserved">this</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">valueClasses</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span> <span class="ActionScriptOperator">==</span> 1 <span class="ActionScriptOperator">&amp;&amp;</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">[</span>0<span class="ActionScriptBracket/Brace">]</span> : <span class="ActionScriptDefault_Text">valueClasses</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptMetadata">ArrayElementType</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">"Class"</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">]</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Array</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_valueClasses</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">valueClasses</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Array</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">// Clone so the Array cannot be affected from outside.
+</span>            <span class="ActionScriptDefault_Text">_valueClasses</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span> <span class="ActionScriptOperator">?</span> <span class="ActionScriptDefault_Text">value</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">slice</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span> : [];
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>; <span class="ActionScriptDefault_Text">i</span><span class="ActionScriptOperator">--</span>; <span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">Class</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Invalid valueClasses argument: '</span> <span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptString">'item at index '</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">' should be a Class but was:&lt;'</span> <span class="ActionScriptOperator">+</span>
+                        <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptString">'&gt;.'</span> <span class="ActionScriptOperator">+</span> <span class="ActionScriptDefault_Text">getQualifiedClassName</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/**
+         * @inheritDoc
+         */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">_strict</span>; <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">set</span> <span class="ActionScriptDefault_Text">strict</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">value</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptDefault_Text">_strict</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">value</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptReserved">get</span> <span class="ActionScriptDefault_Text">numListeners</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">uint</span> <span class="ActionScriptBracket/Brace">{</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>; <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptComment">//TODO: @throws
+</span>        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">add</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">registerListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">addOnce</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">registerListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">true</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">remove</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">binding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">binding</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">null</span>;
+            
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">filterNot</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">binding</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">removeAll</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">NIL</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+        
+        <span class="ActionScriptASDoc">/** @inheritDoc */</span>
+        <span class="ActionScriptReserved">public</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">dispatch</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">...</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptReserved">void</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptComment">// Validate value objects against pre-defined value classes.
+</span>            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">valueObject</span>:<span class="ActionScriptDefault_Text">Object</span>;
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">valueClass</span>:<span class="ActionScriptDefault_Text">Class</span>;
+
+            <span class="ActionScriptComment">// If valueClasses is empty, value objects are not type-checked. 
+</span>            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">numValueClasses</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">numValueObjects</span>:<span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">length</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">numValueObjects</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">numValueClasses</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Incorrect number of arguments. '</span><span class="ActionScriptOperator">+</span>
+                    <span class="ActionScriptString">'Expected at least '</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">numValueClasses</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">' but received '</span><span class="ActionScriptOperator">+</span>
+                    <span class="ActionScriptDefault_Text">numValueObjects</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">for</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">i</span>: <span class="ActionScriptDefault_Text">int</span> <span class="ActionScriptOperator">=</span> 0; <span class="ActionScriptDefault_Text">i</span> <span class="ActionScriptOperator">&lt;</span> <span class="ActionScriptDefault_Text">numValueClasses</span>; <span class="ActionScriptOperator">++</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span>;
+                <span class="ActionScriptDefault_Text">valueClass</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">_valueClasses</span><span class="ActionScriptBracket/Brace">[</span><span class="ActionScriptDefault_Text">i</span><span class="ActionScriptBracket/Brace">]</span>;
+
+                <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptOperator">===</span> <span class="ActionScriptReserved">null</span> <span class="ActionScriptOperator">||</span> <span class="ActionScriptDefault_Text">valueObject</span> <span class="ActionScriptReserved">is</span> <span class="ActionScriptDefault_Text">valueClass</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">continue</span>;
+                    
+                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">ArgumentError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'Value object &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">valueObject</span>
+                    <span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt; is not an instance of &lt;'</span><span class="ActionScriptOperator">+</span><span class="ActionScriptDefault_Text">valueClass</span><span class="ActionScriptOperator">+</span><span class="ActionScriptString">'&gt;.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+
+            <span class="ActionScriptComment">// Broadcast to listeners.
+</span>            
+            <span class="ActionScriptvar">var</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span>:<span class="ActionScriptDefault_Text">SignalBindingList</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span>;
+            <span class="ActionScriptReserved">if</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">while</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span>
+                <span class="ActionScriptBracket/Brace">{</span>
+                    <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">head</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">execute</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">valueObjects</span><span class="ActionScriptBracket/Brace">)</span>;
+                    <span class="ActionScriptDefault_Text">bindingsToProcess</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindingsToProcess</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">tail</span>;
+                <span class="ActionScriptBracket/Brace">}</span>
+            <span class="ActionScriptBracket/Brace">}</span>
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">registerListener</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span>:<span class="ActionScriptDefault_Text">Boolean</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">false</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">registrationPossible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptBracket/Brace">)</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">binding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBinding</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptReserved">this</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptDefault_Text">bindings</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">SignalBindingList</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">binding</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptBracket/Brace">)</span>;
+                <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">binding</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+        <span class="ActionScriptBracket/Brace">}</span>
+
+        <span class="ActionScriptReserved">protected</span> <span class="ActionScriptfunction">function</span> <span class="ActionScriptDefault_Text">registrationPossible</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span>:<span class="ActionScriptDefault_Text">Function</span><span class="ActionScriptOperator">,</span> <span class="ActionScriptDefault_Text">once</span>:<span class="ActionScriptDefault_Text">Boolean</span><span class="ActionScriptBracket/Brace">)</span>:<span class="ActionScriptDefault_Text">Boolean</span>
+        <span class="ActionScriptBracket/Brace">{</span>
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">nonEmpty</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+            
+            <span class="ActionScriptReserved">const</span> <span class="ActionScriptDefault_Text">existingBinding</span>:<span class="ActionScriptDefault_Text">ISignalBinding</span> <span class="ActionScriptOperator">=</span> <span class="ActionScriptDefault_Text">bindings</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">find</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">listener</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptOperator">!</span><span class="ActionScriptDefault_Text">existingBinding</span><span class="ActionScriptBracket/Brace">)</span> <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">true</span>;
+
+            <span class="ActionScriptReserved">if</span> <span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptDefault_Text">existingBinding</span><span class="ActionScriptOperator">.</span><span class="ActionScriptDefault_Text">once</span> <span class="ActionScriptOperator">!=</span> <span class="ActionScriptDefault_Text">once</span><span class="ActionScriptBracket/Brace">)</span>
+            <span class="ActionScriptBracket/Brace">{</span>
+                <span class="ActionScriptComment">// If the listener was previously added, definitely don't add it again.
+</span>                <span class="ActionScriptComment">// But throw an exception if their once values differ.
+</span>                <span class="ActionScriptReserved">throw</span> <span class="ActionScriptReserved">new</span> <span class="ActionScriptDefault_Text">IllegalOperationError</span><span class="ActionScriptBracket/Brace">(</span><span class="ActionScriptString">'You cannot addOnce() then add() the same listener without removing the relationship first.'</span><span class="ActionScriptBracket/Brace">)</span>;
+            <span class="ActionScriptBracket/Brace">}</span>
+            
+            <span class="ActionScriptReserved">return</span> <span class="ActionScriptReserved">false</span>; <span class="ActionScriptComment">// Listener was already registered.
+</span>        <span class="ActionScriptBracket/Brace">}</span>
+    <span class="ActionScriptBracket/Brace">}</span>
+<span class="ActionScriptBracket/Brace">}</span>
+</pre></body>
+</html>
