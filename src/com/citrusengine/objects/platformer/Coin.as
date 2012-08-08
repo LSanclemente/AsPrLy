@@ -1,9 +1,11 @@
 package com.citrusengine.objects.platformer
 {
+
 	import Box2DAS.Dynamics.ContactEvent;
+
 	import com.citrusengine.utils.Box2DShapeMaker;
+
 	import flash.display.MovieClip;
-	
 	import flash.utils.getDefinitionByName;
 	
 	/**
@@ -32,7 +34,7 @@ package com.citrusengine.objects.platformer
 		 * "com.citrusengine.objects.platformer.Hero" or Hero directly (no quotes). Only String
 		 * form will work when creating objects via a level editor.
 		 */
-		[Property(value="code.lyllia.Lyllia")]
+		[Property(value="com.citrusengine.objects.platformer.box2d.Hero")]
 		public function set collectorClass(value:*):void
 		{
 			if (value is String)

@@ -53,6 +53,7 @@ package props
 		public var onShoot:Signal;
 		
 		// properties for ladder
+		[Property]
 		public var originalGravity:Number = 1.6;
 		public var canClimb:Boolean = false;
 		public var climbVelocity:Number = 5;
@@ -62,10 +63,8 @@ package props
 		[Inspectable]
 		protected var _climbing:Boolean = false;
 		
-		[Property(value = "escaleraidle")]
+		[Property]
 		protected var _climbAnimation:String = "escaleraidle";
-
-		protected var _combinedGroundAngle:Number = 0;
 		
 		//end properties for ladder
 		protected var _shootDelayTimeoutID:Number;
@@ -352,7 +351,7 @@ package props
 			_shootDelay = false;
 		}
 
-		protected function updateCombinedGroundAngle():void
+		override protected function updateCombinedGroundAngle():void
 		{
 			_combinedGroundAngle = 0;
 			

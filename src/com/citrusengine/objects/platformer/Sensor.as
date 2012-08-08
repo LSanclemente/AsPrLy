@@ -1,10 +1,12 @@
 package com.citrusengine.objects.platformer
 {
+
 	import Box2DAS.Dynamics.ContactEvent;
 	import Box2DAS.Dynamics.b2Body;
-	import flash.display.MovieClip;
 	
 	import com.citrusengine.objects.PhysicsObject;
+	
+	import flash.display.MovieClip;
 	
 	import org.osflash.signals.Signal;
 	
@@ -23,6 +25,8 @@ package com.citrusengine.objects.platformer
 	 */	
 	public class Sensor extends PhysicsObject
 	{
+		[Property(value=false)]
+		public var isLadder:Boolean = false;
 		/**
 		 * Dispatches on first contact with the sensor.
 		 */
@@ -31,9 +35,6 @@ package com.citrusengine.objects.platformer
 		 * Dispatches when the object leaves the sensor.
 		 */
 		public var onEndContact:Signal;
-		
-		[Property(value="false")]
-		public var isLadder:Boolean = false;
 		
 		public static function Make(name:String, x:Number, y:Number, width:Number, height:Number, view:* = null):Sensor
 		{

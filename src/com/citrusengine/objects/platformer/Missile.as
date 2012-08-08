@@ -1,15 +1,20 @@
 package com.citrusengine.objects.platformer 
 {
+
 	import Box2DAS.Common.V2;
-	import Box2DAS.Dynamics.b2Filter;
 	import Box2DAS.Dynamics.ContactEvent;
+
 	import com.citrusengine.objects.PhysicsObject;
 	import com.citrusengine.physics.CollisionCategories;
+
+	import org.osflash.signals.Signal;
+
 	import flash.display.MovieClip;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
-	import org.osflash.signals.Signal;
 	
+	import Box2DAS.Dynamics.ContactEvent;
+		
 	/**
 	 * A missile is an object that moves at a particular trajectory and speed, and explodes when it comes into contact with something.
 	 * Often you will want the object that it exploded on to also die (or at least get hurt), such as a hero or an enemy.
@@ -30,11 +35,11 @@ package com.citrusengine.objects.platformer
 	public class Missile extends PhysicsObject 
 	{
 		/**
-		 * The speed that the missile moves at.
-		 */
-		public var speed:Number = 5;
-		/**
 		 * In degrees, the angle that the missile will fire at. Right is zero degrees, going clockwise.
+		 */
+		public var speed:Number = 2;
+		/**
+		 * The speed that the missile moves at.
 		 */
 		public var angle:Number = 0;
 		/**
@@ -71,7 +76,6 @@ package com.citrusengine.objects.platformer
 			
 			_velocity = new V2(speed, 0);
 			_velocity.rotate(angle * Math.PI / 180);
-			gravity = 0;
 			_inverted = speed < 0;
 			
 			_fuseDurationTimeoutID = setTimeout(explode, fuseDuration);
@@ -96,6 +100,12 @@ package com.citrusengine.objects.platformer
 		override public function update(timeDelta:Number):void
 		{
 			super.update(timeDelta);
+			
+			var removeGravity:V2 = new V2();
+			removeGravity.subtract(_box2D.world.GetGravity());
+			removeGravity.multiplyN(body.GetMass());
+			
+			_body.ApplyForce(removeGravity, _body.GetWorldCenter());
 			
 			if (!_exploded)
 			{
@@ -141,8 +151,6 @@ package com.citrusengine.objects.platformer
 		override protected function defineFixture():void
 		{
 			super.defineFixture();
-			_fixtureDef.filter.categoryBits = CollisionCategories.Get("Bullets");
-			_fixtureDef.filter.maskBits = CollisionCategories.GetAllExcept("Bullets", "GoodGuys");
 		}
 		
 		override protected function createFixture():void

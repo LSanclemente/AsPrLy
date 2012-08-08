@@ -1,9 +1,5 @@
-﻿package com.citrusengine.core {
-
-
-	import com.citrusengine.utils.AGameData;
-	import com.citrusengine.utils.LevelManager;
-
+﻿package com.citrusengine.core
+{
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	
@@ -13,23 +9,19 @@
 	 * 
 	 * <p>CitrusEngine is a singleton so that you can grab a reference to it anywhere, anytime. Don't abuse this power,
 	 * but use it wisely. With it, you can quickly grab a reference to the manager classes such as current State, Input and SoundManager.</p>
-	 * 
-	 * <p>CitrusEngine can access to the Stage3D power thanks to the <a href="http://starling-framework.org/">Starling Framework</a></p>
 	 */	
 	public class CitrusEngine extends MovieClip
 	{
-		public static const VERSION:String = "3.00.00 BETA 1";
-				
+		public static const VERSION:String = "2.10.50";
+		
 		private static var _instance:CitrusEngine;
 		
-		private var _levelManager:LevelManager;
-		private var _state:IState;
-		private var _newState:IState;
+		private var _state:State;
+		private var _newState:State;
 		private var _stateDisplayIndex:uint = 0;
 		private var _startTime:Number;
 		private var _gameTime:Number;
 		private var _playing:Boolean = true;
-		private var _gameData:AGameData;
 		private var _input:Input;
 		private var _sound:SoundManager;
 		private var _console:Console;
@@ -65,43 +57,27 @@
 			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
 			addEventListener(Event.ADDED_TO_STAGE, handleAddedToStage);
 		}
-
-		
-		/**
-		 * Return the level manager, use it if you want. Take a look on its class for more information.
-		 */
-		public function get levelManager():LevelManager {
-			return _levelManager;
-		}
-		
-		/**
-		 * You may use the Citrus Engine's level manager if you have several levels. Take a look on its class for more information.
-		 */
-		public function set levelManager(value:LevelManager):void {
-			_levelManager = value;
-		}
 		
 		/**
 		 * A reference to the active game state. Acutally, that's not entirely true. If you've recently changed states and a tick
 		 * hasn't occured yet, then this will reference your new state; this is because actual state-changes only happen pre-tick.
 		 * That way you don't end up changing states in the middle of a state's tick, effectively fucking stuff up. 
 		 */		
-		public function get state():IState
-		{			
+		public function get state():State
+		{
 			if (_newState)
 				return _newState;
-			else {
+			else
 				return _state;
-			}
 		}
 		
 		/**
 		 * We only ACTUALLY change states on enter frame so that we don't risk changing states in the middle of a state update.
 		 * However, if you use the state getter, it will grab the new one for you, so everything should work out just fine.
 		 */		
-		public function set state(value:IState):void
+		public function set state(value:State):void
 		{
-			_newState = value;			
+			_newState = value;
 		}
 		
 		/**
@@ -118,21 +94,6 @@
 			_playing = value;
 			if (_playing)
 				_gameTime = new Date().time;
-		}
-		
-		/**
-		 * A reference to the Abstract GameData instance. Use it if you want.
-		 * It's a dynamic class, so you don't have problem to access informations in its extended class.
-		 */
-		public function get gameData():AGameData {
-			return _gameData;
-		}
-
-		/**
-		 * You may use a class to store your game's data, there is already an abstract class for that :
-		 */
-		public function set gameData(gameData:AGameData):void {
-			_gameData = gameData;
 		}
 		
 		/**
@@ -190,13 +151,11 @@
 				if (_state)
 				{
 					_state.destroy();
-					
-					removeChild(_state as State);
+					removeChild(_state);
 				}
 				_state = _newState;
 				_newState = null;
-				
-				addChildAt(_state as State, _stateDisplayIndex);
+				addChildAt(_state, _stateDisplayIndex);
 				_state.initialize();
 			}
 			
@@ -205,19 +164,17 @@
 			{
 				var nowTime:Number = new Date().time;
 				var timeSinceLastFrame:Number = nowTime - _gameTime;
-				var timeDelta:Number = timeSinceLastFrame * 0.001;
+				var timeDelta:Number = timeSinceLastFrame / 1000;
 				_gameTime = nowTime;
 				
 				_state.update(timeDelta);
 			}
-			
 		}
 		
 		private function handleStageDeactivated(e:Event):void
 		{
 			if (_playing)
 			{
-					
 				playing = false;
 				stage.addEventListener(Event.ACTIVATE, handleStageActivated);
 			}
@@ -225,7 +182,6 @@
 		
 		private function handleStageActivated(e:Event):void
 		{
-					
 			playing = true;
 			stage.removeEventListener(Event.ACTIVATE, handleStageActivated);
 		}
@@ -247,7 +203,6 @@
 		private function handleConsoleSetCommand(objectName:String, paramName:String, paramValue:String):void
 		{
 			var object:CitrusObject = _state.getObjectByName(objectName);
-			
 			if (!object)
 			{
 				trace("Warning: There is no object named " + objectName);
@@ -263,9 +218,13 @@
 				value = paramValue;
 			
 			if (object.hasOwnProperty(paramName))
+			{
 				object[paramName] = value;
+			}
 			else
+			{
 				trace("Warning: " + objectName + " has no parameter named " + paramName + ".");
+			}
 		}
 	}
 }

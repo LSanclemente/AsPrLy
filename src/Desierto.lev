@@ -34,9 +34,13 @@
     <Property name="maxVelocity">8</Property>
     <Property name="jumpHeight">14</Property>
     <Property name="jumpAcceleration">0.9</Property>
+    <Property name="killVelocity">3</Property>
+    <Property name="enemySpringHeight">8</Property>
+    <Property name="enemySpringJumpHeight">9</Property>
     <Property name="hurtDuration">1000</Property>
     <Property name="hurtVelocityX">6</Property>
     <Property name="hurtVelocityY">10</Property>
+    <Property name="canDuck">true</Property>
     <Property name="enemyClass">com.citrusengine.objects.platformer.Baddy</Property>
     <Property name="friction">10</Property>
     <Property name="gravity">1.6</Property>
@@ -45,7 +49,7 @@
     <Property name="parallax">1</Property>
     <Property name="rotation">0</Property>
     <Property name="group">0</Property>
-    <Property name="view">art/sprites/props.swf</Property>
+    <Property name="view">art/sprites/lyllia.swf</Property>
     <Property name="offsetX">0</Property>
     <Property name="offsetY">2</Property>
     <Property name="registration">center</Property>
@@ -296,7 +300,7 @@
   <CitrusObject name="Platform26" className="com.citrusengine.objects.platformer.Platform">
     <Property name="oneWay">false</Property>
     <Property name="gravity">1.6</Property>
-    <Property name="x">663</Property>
+    <Property name="x">662</Property>
     <Property name="y">1479</Property>
     <Property name="parallax">1</Property>
     <Property name="rotation">0</Property>
@@ -352,23 +356,6 @@
     <Property name="registration">center</Property>
     <Property name="width">98</Property>
     <Property name="height">95</Property>
-  </CitrusObject>
-  <CitrusObject name="timeDestructible31" className="props.timeDestructible">
-    <Property name="timeToBanish">200</Property>
-    <Property name="destroyerClass">props.Lyllia</Property>
-    <Property name="hitPoints">10</Property>
-    <Property name="gravity">1.6</Property>
-    <Property name="x">2960</Property>
-    <Property name="y">1656</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group">0</Property>
-    <Property name="view">art/objetos/bandidos2.png</Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">0</Property>
-    <Property name="registration">center</Property>
-    <Property name="width">226</Property>
-    <Property name="height">48</Property>
   </CitrusObject>
   <CitrusObject name="Platform32" className="com.citrusengine.objects.platformer.Platform">
     <Property name="oneWay">false</Property>
@@ -489,23 +476,6 @@
     <Property name="registration">center</Property>
     <Property name="width">280</Property>
     <Property name="height">30</Property>
-  </CitrusObject>
-  <CitrusObject name="timeDestructible44" className="props.timeDestructible">
-    <Property name="timeToBanish">200</Property>
-    <Property name="destroyerClass">props.Lyllia</Property>
-    <Property name="hitPoints">10</Property>
-    <Property name="gravity">1.6</Property>
-    <Property name="x">4616</Property>
-    <Property name="y">1656</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group">0</Property>
-    <Property name="view">art/objetos/bandidos2.png</Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">0</Property>
-    <Property name="registration">center</Property>
-    <Property name="width">226</Property>
-    <Property name="height">48</Property>
   </CitrusObject>
   <CitrusObject name="Platform45" className="com.citrusengine.objects.platformer.Platform">
     <Property name="oneWay">false</Property>
@@ -671,23 +641,6 @@
     <Property name="offsetY">0</Property>
     <Property name="registration">center</Property>
     <Property name="height">368</Property>
-  </CitrusObject>
-  <CitrusObject name="timeDestructible59" className="props.timeDestructible">
-    <Property name="timeToBanish">150</Property>
-    <Property name="destroyerClass">props.Lyllia</Property>
-    <Property name="hitPoints">10</Property>
-    <Property name="gravity">1.6</Property>
-    <Property name="x">6431.5</Property>
-    <Property name="y">1656</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group">0</Property>
-    <Property name="view">art/objetos/bandidos2.png</Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">0</Property>
-    <Property name="registration">center</Property>
-    <Property name="width">226</Property>
-    <Property name="height">48</Property>
   </CitrusObject>
   <CitrusObject name="Platform60" className="com.citrusengine.objects.platformer.Platform">
     <Property name="oneWay">false</Property>
@@ -1740,23 +1693,6 @@
     <Property name="registration">center</Property>
     <Property name="width">30</Property>
     <Property name="height">359</Property>
-  </CitrusObject>
-  <CitrusObject name="timeDestructible121" className="props.timeDestructible">
-    <Property name="timeToBanish">150</Property>
-    <Property name="destroyerClass">props.Lyllia</Property>
-    <Property name="hitPoints">10</Property>
-    <Property name="gravity">1.6</Property>
-    <Property name="x">19291</Property>
-    <Property name="y">1327</Property>
-    <Property name="parallax">1</Property>
-    <Property name="rotation">0</Property>
-    <Property name="group">0</Property>
-    <Property name="view">art/objetos/bandidos2.png</Property>
-    <Property name="offsetX">0</Property>
-    <Property name="offsetY">0</Property>
-    <Property name="registration">center</Property>
-    <Property name="width">226</Property>
-    <Property name="height">48</Property>
   </CitrusObject>
   <CitrusObject name="Platform122" className="com.citrusengine.objects.platformer.Platform">
     <Property name="oneWay">false</Property>

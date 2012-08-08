@@ -1,21 +1,21 @@
-package com.citrusengine.objects.platformer
-{
+package com.citrusengine.objects.platformer {
+	
 	import Box2DAS.Collision.Shapes.b2PolygonShape;
 	import Box2DAS.Common.V2;
 	import Box2DAS.Dynamics.b2Body;
 	import Box2DAS.Dynamics.b2Fixture;
 	import Box2DAS.Dynamics.b2FixtureDef;
 	import Box2DAS.Dynamics.ContactEvent;
+	
 	import com.citrusengine.math.MathVector;
 	import com.citrusengine.objects.PhysicsObject;
 	import com.citrusengine.physics.CollisionCategories;
 	import com.citrusengine.utils.Box2DShapeMaker;
+	
 	import flash.display.MovieClip;
 	import flash.utils.clearTimeout;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.setTimeout;
-	
-	
 	
 	/**
 	 * This is a common example of a side-scrolling bad guy. He has limited logic, basically
@@ -30,20 +30,28 @@ package com.citrusengine.objects.platformer
 	{
 		[Property(value="1.3")]
 		public var speed:Number = 1.3;
+		
 		[Property(value="3")]
 		public var enemyKillVelocity:Number = 3;
+		
 		[Property(value="left")]
 		public var startingDirection:String = "left";
+		
 		[Property(value="400")]
 		public var hurtDuration:Number = 400;
+		
 		[Property(value="-100000")]
 		public var leftBound:Number = -100000;
+		
 		[Property(value="100000")]
 		public var rightBound:Number = 100000;
+		
 		[Citrus(value="10")]
 		public var wallSensorOffset:Number = 10;
+		
 		[Citrus(value="2")]
 		public var wallSensorWidth:Number = 2;
+		
 		[Citrus(value="2")]
 		public var wallSensorHeight:Number = 2;
 		
@@ -93,7 +101,7 @@ package com.citrusengine.objects.platformer
 			return _enemyClass;
 		}
 		
-		[Property(value="com.citrusengine.objects.platformer.Hero")]
+		[Property(value="com.citrusengine.objects.platformer..Hero")]
 		public function set enemyClass(value:*):void
 		{
 			if (value is String)

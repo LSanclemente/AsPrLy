@@ -21,7 +21,7 @@
 		override public function initialize():void
 		{
 			super.initialize();
-			
+			trace("initialize GameState");
 			//Create Box2D
 			var box2D:Box2D = new Box2D("Box2D");
 			add(box2D);
@@ -38,8 +38,38 @@
 				view.cameraTarget = _lyllia;
 				view.cameraOffset = new MathVector(stage.stageWidth -500, stage.stageHeight -100 );
 				view.cameraEasing = new MathVector(1, .5);
-				view.cameraBounds = new Rectangle(0, 0, 22153, 3671	);
+				// view.cameraBounds = new Rectangle(0, 0, 22153, 3671	);
+				this.setDefaultBounds();
 			}
+		}
+		
+		private function setDefaultBounds():void {
+			trace("setDefaultBounds");
+			var maxX:int = 1000;
+			var maxY:int = 1000;
+			if(_levelData){
+				trace("_levelData exists");
+				for each (var objectXML:XML in _levelData.CitrusObject){
+					var x:int = 0;
+					var y:int = 0;
+					var width:int = 0;
+					var height:int = 0;
+					for each (var paramXML:XML in objectXML.Property){
+						if (paramXML.@name == "x") x = int(paramXML.toString());
+						if (paramXML.@name == "y") y = int(paramXML.toString());
+						if (paramXML.@name == "width") width = int(paramXML.toString());
+						if (paramXML.@name == "height") height = int(paramXML.toString());
+					}
+					if ((x+width) > maxX) maxX= x+width
+					if ((y+height) > maxY) maxY= y+height
+				}
+				
+			}else{
+				trace("_levelData DOESNT exists");
+			}	
+			trace("maxX="+ maxX);
+			trace("maxY="+ maxY);
+			view.cameraBounds = new Rectangle(0, 0, maxX, maxY);
 		}
 	}
 

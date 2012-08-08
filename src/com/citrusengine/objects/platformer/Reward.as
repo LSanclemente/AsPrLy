@@ -37,7 +37,7 @@ package com.citrusengine.objects.platformer
 	 * 
 	 */
 	public class Reward extends PhysicsObject 
-	{
+	{ 
 		/**
 		 * The speed at which the reward moves. It will turn around when it hits a wall.
 		 */

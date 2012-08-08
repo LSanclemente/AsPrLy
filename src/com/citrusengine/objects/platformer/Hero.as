@@ -1,22 +1,22 @@
 package com.citrusengine.objects.platformer
 {
+
 	import Box2DAS.Common.V2;
-	import Box2DAS.Dynamics.b2Fixture;
 	import Box2DAS.Dynamics.ContactEvent;
-	import Box2DAS.Dynamics.b2Body;
-	import com.citrusengine.physics.CollisionCategories;
-	import flash.display.MovieClip;
-	
+	import Box2DAS.Dynamics.b2Fixture;
+
 	import com.citrusengine.math.MathVector;
 	import com.citrusengine.objects.PhysicsObject;
-	
-	import flash.media.Video;
+	import com.citrusengine.physics.CollisionCategories;
+	import com.citrusengine.utils.Box2DShapeMaker;
+
+	import org.osflash.signals.Signal;
+
+	import flash.display.MovieClip;
 	import flash.ui.Keyboard;
 	import flash.utils.clearTimeout;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.setTimeout;
-	
-	import org.osflash.signals.Signal;
 	
 	/**
 	 * This is a common, simple, yet solid implementation of a side-scrolling Hero. 
@@ -32,58 +32,74 @@ package com.citrusengine.objects.platformer
 		//properties
 		/**
 		 * This is the rate at which the hero speeds up when you move him left and right. 
-		 */		
+		 */
+		[Property(value="1")]
 		public var acceleration:Number = 1;
 		
 		/**
 		 * This is the fastest speed that the hero can move left or right. 
-		 */		
+		 */
+		[Property(value="8")]
 		public var maxVelocity:Number = 8;
 		
 		/**
 		 * This is the initial velocity that the hero will move at when he jumps.
-		 */		
-		public var jumpHeight:Number = 14;
+		 */
+		[Property(value="11")]
+		public var jumpHeight:Number = 11;
 		
 		/**
 		 * This is the amount of "float" that the hero has when the player holds the jump button while jumping. 
-		 */		
-		public var jumpAcceleration:Number = 0.9;
+		 */
+		[Property(value="0.3")]
+		public var jumpAcceleration:Number = 0.3;
 		
 		/**
 		 * This is the y velocity that the hero must be travelling in order to kill a Baddy.
-		 */		
+		 */
+		[Property(value="3")]
 		public var killVelocity:Number = 3;
 		
 		/**
 		 * The y velocity that the hero will spring when he kills an enemy. 
-		 */		
-		public var enemySpringHeight:Number = 10;
+		 */
+		[Property(value="8")]
+		public var enemySpringHeight:Number = 8;
 		
 		/**
 		 * The y velocity that the hero will spring when he kills an enemy while pressing the jump button. 
-		 */		
-		public var enemySpringJumpHeight:Number = 12;
+		 */
+		[Property(value="9")]
+		public var enemySpringJumpHeight:Number = 9;
 		
 		/**
 		 * How long the hero is in hurt mode for. 
-		 */		
+		 */
+		[Property(value="1000")]
 		public var hurtDuration:Number = 1000;
 		
 		/**
 		 * The amount of kick-back that the hero jumps when he gets hurt. 
-		 */		
+		 */
+		[Property(value="6")]
 		public var hurtVelocityX:Number = 6;
 		
 		/**
 		 * The amount of kick-back that the hero jumps when he gets hurt. 
-		 */		
+		 */
+		[Property(value="10")]
 		public var hurtVelocityY:Number = 10;
+		
+		/**
+		 * Determines whether or not the hero's ducking ability is enabled.
+		 */
+		[Property(value="true")]
+		public var canDuck:Boolean = true;
 		
 		//events
 		/**
 		 * Dispatched whenever the hero jumps. 
-		 */		
+		 */
 		public var onJump:Signal;
 		
 		/**
@@ -101,11 +117,6 @@ package com.citrusengine.objects.platformer
 		 */		
 		public var onAnimationChange:Signal;
 		
-		/**
-		 * Determines whether or not the hero's ducking ability is enabled.
-		 */
-		public var canDuck:Boolean = true;
-		
 		protected var _groundContacts:Array = [];//Used to determine if he's on ground or not.
 		protected var _enemyClass:Class = Baddy;
 		protected var _onGround:Boolean = false;
@@ -116,6 +127,7 @@ package com.citrusengine.objects.platformer
 		protected var _playerMovingHero:Boolean = false;
 		protected var _controlsEnabled:Boolean = true;
 		protected var _ducking:Boolean = false;
+		protected var _combinedGroundAngle:Number = 0;
 		
 		public static function Make(name:String, x:Number, y:Number, width:Number, height:Number, view:* = null):Hero
 		{
@@ -145,7 +157,7 @@ package com.citrusengine.objects.platformer
 			onJump.removeAll();
 			onGiveDamage.removeAll();
 			onTakeDamage.removeAll();
-			onAnimationChange.removeAll()
+			onAnimationChange.removeAll();
 			super.destroy();
 		}
 		
@@ -180,7 +192,8 @@ package com.citrusengine.objects.platformer
 		 * For example, if you want to set the "Baddy" class as your hero's enemy, pass
 		 * "com.citrusengine.objects.platformer.Baddy", or Baddy (with no quotes). Only String
 		 * form will work when creating objects via a level editor.
-		 */		
+		 */
+		[Property(value="com.citrusengine.objects.platformer..Baddy")]
 		public function set enemyClass(value:*):void
 		{
 			if (value is String)
@@ -198,6 +211,7 @@ package com.citrusengine.objects.platformer
 			return _friction;
 		}
 		
+		[Property(value="0.75")]
 		public function set friction(value:Number):void
 		{
 			_friction = value;
@@ -222,13 +236,13 @@ package com.citrusengine.objects.platformer
 				
 				if (_ce.input.isDown(Keyboard.RIGHT) && !_ducking)
 				{
-					velocity.x += (acceleration);
+					velocity = V2.add(velocity, getSlopeBasedMoveAngle());
 					moveKeyPressed = true;
 				}
 				
 				if (_ce.input.isDown(Keyboard.LEFT) && !_ducking)
 				{
-					velocity.x -= (acceleration);
+					velocity = V2.subtract(velocity, getSlopeBasedMoveAngle());
 					moveKeyPressed = true;
 				}
 				
@@ -318,6 +332,11 @@ package com.citrusengine.objects.platformer
 			_bodyDef.allowSleep = false;
 		}
 		
+		override protected function createShape():void
+		{
+			_shape = Box2DShapeMaker.BeveledRect(_width, _height, 0.1);
+		}
+		
 		override protected function defineFixture():void
 		{
 			super.defineFixture();
@@ -354,9 +373,9 @@ package com.citrusengine.objects.platformer
 		
 		protected function handleBeginContact(e:ContactEvent):void
 		{
-			var colliderBody:b2Body = e.other.GetBody();
+			var collider:PhysicsObject = e.other.GetBody().GetUserData();
 			
-			if (_enemyClass && colliderBody.GetUserData() is _enemyClass)
+			if (_enemyClass && collider is _enemyClass)
 			{
 				if (_body.GetLinearVelocity().y < killVelocity && !_hurt)
 				{
@@ -366,13 +385,13 @@ package com.citrusengine.objects.platformer
 					var hurtVelocity:V2 = _body.GetLinearVelocity();
 					hurtVelocity.y = -hurtVelocityY;
 					hurtVelocity.x = hurtVelocityX;
-					if (colliderBody.GetPosition().x > _body.GetPosition().x)
+					if (collider.x > x)
 						hurtVelocity.x = -hurtVelocityX;
 					_body.SetLinearVelocity(hurtVelocity);
 				}
 				else
 				{
-					_springOffEnemy = colliderBody.GetPosition().y * _box2D.scale - height;
+					_springOffEnemy = collider.y - height;
 					onGiveDamage.dispatch();
 				}
 			}
@@ -386,6 +405,7 @@ package com.citrusengine.objects.platformer
 				{
 					_groundContacts.push(e.other);
 					_onGround = true;
+					updateCombinedGroundAngle();
 				}
 			}
 		}
@@ -399,7 +419,29 @@ package com.citrusengine.objects.platformer
 				_groundContacts.splice(index, 1);
 				if (_groundContacts.length == 0)
 					_onGround = false;
+				updateCombinedGroundAngle();
 			}
+		}
+		
+		protected function getSlopeBasedMoveAngle():V2
+		{
+			return new V2(acceleration, 0).rotate(_combinedGroundAngle);
+		}
+		
+		protected function updateCombinedGroundAngle():void
+		{
+			_combinedGroundAngle = 0;
+			
+			if (_groundContacts.length == 0)
+				return;
+			
+			for each (var contact:b2Fixture in _groundContacts)
+				var angle:Number = contact.GetBody().GetAngle();
+				
+			var turn:Number = 45 * Math.PI / 180;
+			angle = angle % turn;
+			_combinedGroundAngle += angle;
+			_combinedGroundAngle /= _groundContacts.length;
 		}
 		
 		protected function endHurtState():void

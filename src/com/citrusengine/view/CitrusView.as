@@ -1,9 +1,9 @@
-package com.citrusengine.view {
-
+package com.citrusengine.view
+{
 	import com.citrusengine.core.CitrusEngine;
 	import com.citrusengine.math.MathVector;
 	import com.citrusengine.utils.LoadManager;
-
+	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	
@@ -14,8 +14,10 @@ package com.citrusengine.view {
 	 * <p>This is the class by which you will grab a reference to the graphical representations of your Citrus Objects,
 	 * which will be useful if you need to add mouse event handlers to them, or add graphics effects and filter.</p>
 	 * 
-	 * <p>The CitrusView was meant to be extended to support multiple rendering methods, such as blitting, or even Stage3D thanks to Starling. The goal 
-	 * is to provide as much decoupling as possible of the data/logic from the view.</p> 
+	 * <p>The CitrusView was meant to be extended to support multiple rendering methods, such as blitting, or even 3D. The goal 
+	 * is to provide as much decoupling as possible of the data/logic from the view. In the near future, it is our goal to
+	 * provide multiple rendering methods such as blitting right out of the box, so that the developer can choose which method
+	 * they would like to work with.</p> 
 	 */	
 	public class CitrusView
 	{
@@ -63,16 +65,15 @@ package com.citrusengine.view {
 		public var cameraLensHeight:Number;
 		
 		protected var _viewObjects:Dictionary = new Dictionary();
-		protected var _root:*;
+		protected var _root:Sprite;
 		protected var _viewInterface:Class;
 		
 		/**
 		 * There is one CitrusView per state, so when a new state is initialized, it creates the view instance.
 		 * You can override which type of CitrusView you would like to create via the State.createView() protected method.
-		 * Thanks to the State class, you have access to traditional flash display list or blitting
-		 * If you want to target Stage3D you have to use the StarlingState class
+		 * At the time of this writing, only the SpriteView is available, but in the future, blitting is expected to be supported.
 		 */		
-		public function CitrusView(root:*, viewInterface:Class)
+		public function CitrusView(root:Sprite, viewInterface:Class)
 		{
 			_root = root;
 			_viewInterface = viewInterface;
@@ -184,7 +185,7 @@ package com.citrusengine.view {
 			if (bounds)
 				cameraBounds = bounds;
 			if (easing)
-				cameraEasing = easing;
+				cameraEasing = easing
 		}
 		
 		/**
